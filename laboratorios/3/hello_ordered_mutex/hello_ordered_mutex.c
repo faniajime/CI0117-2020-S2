@@ -1,6 +1,7 @@
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 
 typedef struct {
     size_t position;
@@ -50,6 +51,10 @@ int main(int argc, char* arg[]) {
         return 1;
     }
 
+    struct timespec inicio, final; 
+    int dif;
+    clock_gettime(CLOCK_REALTIME, &inicio);
+
     pthread_t* threads = malloc((size_t)(thread_count * sizeof(pthread_t)));
     shared_data_t* shared_data = (shared_data_t*)calloc(1, sizeof(shared_data_t));
 
@@ -77,11 +82,13 @@ int main(int argc, char* arg[]) {
     for (size_t i = 0; i < thread_count; ++i) {
         pthread_mutex_destroy(&shared_data->mutexes[i]);
     }
-    
+    clock_gettime(CLOCK_REALTIME, &final);
+    dif = (final.tv_nsec - inicio.tv_nsec);
+    printf("This solution took %u nanoseconds to run \n", dif);
+
     free(threads);
     free(shared_data->mutexes);
     free(shared_data);
-    free(thread_data_list);
 
     return 0;
 }
