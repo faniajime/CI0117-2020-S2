@@ -1,5 +1,4 @@
  
 ### ¿Permite este mecanismo de control de concurrencia resolver este problema de manera predecible?
 
-No, inclusive utilizando un arreglo de mutexes, los hilos no se sincronizan, dado que en el tiempo que le toma al hilo cero bloquear todos los mutexes, los hilos ya terminaron de imprimir. 
-
+Si, usando arreglos de mutexes podemos hacer que los hilos se ejecuten en orden, y podemos predecir el hilo que se esta ejecutando en un determinado momento.
