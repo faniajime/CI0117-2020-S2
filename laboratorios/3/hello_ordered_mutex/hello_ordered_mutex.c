@@ -1,3 +1,4 @@
+ 
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -26,16 +27,12 @@ void* helloWorld(void* args) {
     shared_data_t* shared_data = data->shared_data;
     size_t num_threads = shared_data->num_threads;
 
-
-    if(thread_num == 0){
-        for (size_t i = 1; i < num_threads; ++i) {
-            pthread_mutex_lock(&shared_data->mutexes[i]);
-        }
-    }
+    pthread_mutex_lock(&shared_data->mutexes[thread_num]);
     printf("Im the thread %zu and I arrived %zu\n", thread_num, shared_data->position);
     ++shared_data->position;
+
     pthread_mutex_unlock(&shared_data->mutexes[shared_data->position]);
-      
+    pthread_mutex_unlock(&shared_data->mutexes[thread_num]);
     return NULL;
 }
 
@@ -68,6 +65,11 @@ int main(int argc, char* arg[]) {
     }
     
     thread_data_t* thread_data_list = malloc((size_t)(thread_count * sizeof(thread_data_t)));
+
+    for (size_t i = 1; i < shared_data->num_threads; ++i) {
+        pthread_mutex_lock(&shared_data->mutexes[i]);
+    }
+
 
     for (size_t i = 0; i < thread_count; ++i) {
         thread_data_list[i].thread_num = i;
