@@ -16,20 +16,25 @@ En este caso, es necesario implementar una solución de forma en la que al llega
 
 Para los escritores:
 
-`Semaforoescritores.wait()
+```
+Semaforoescritores.wait()
 #sección crítica para escritores
-Semaforoescritores.post()`
+Semaforoescritores.post()
+```
 
 
 Para los lectores:
 
-`Si hay lectores:
+```
+Si hay lectores:
   Semaforoescritores.wait()
   mutexlectores.lock()
     #seccion critica para lectores
   Si ya no hay lectores:
   Semaforoescritores.post()
   mutexlectores.unlock();`
+```
+
  
 ### Implemente un programa en C utilizando Pthreads donde se haga una simulación de la solución al problema o patrón asignado. Asegúrese de que al ejecutar su programa se pueda observar de forma clara lo que ocurre en cada hilo (Puede hacer uso de funciones de sleep aleatorios en hilos).
 
