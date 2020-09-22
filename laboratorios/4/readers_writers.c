@@ -10,7 +10,6 @@
 
 typedef struct 
 {
-    size_t numthreads;
     size_t quantity;
     pthread_mutex_t mutex;
     sem_t writer_semaphore;
@@ -95,7 +94,7 @@ int main(int argc, char* arg[]) {
     numthreads = readers_num + writers_num;
     pthread_t* threads = malloc((size_t)(numthreads * sizeof(pthread_t)));
     shared_data_t* shared_data = (shared_data_t*)malloc(sizeof(shared_data_t));
-    thread_data_t* thread_data_list = malloc((size_t)(shared_data->numthreads * sizeof(thread_data_t)));
+    thread_data_t* thread_data_list = malloc((size_t)(numthreads * sizeof(thread_data_t)));
 
     shared_data->quantity = 0;
     shared_data->readers_counter = 0;
@@ -105,21 +104,21 @@ int main(int argc, char* arg[]) {
 
 // Thread creation
     
-    for (size_t i = 0; i <= readers_num; ++i) {
+    for (size_t i = 0; i < writers_num; ++i) {
         thread_data_list[i].thread_num= i;
         thread_data_list[i].shared_data = shared_data;
         pthread_create(&threads[i], NULL, writet, (void*)&thread_data_list[i]);
     }
 
-    for (size_t i = 0; i <= writers_num; ++i) {
+    for (size_t i = readers_num; i < numthreads; ++i) {
         thread_data_list[i].thread_num= i;
         thread_data_list[i].shared_data = shared_data;
         pthread_create(&threads[i], NULL, readt, (void*)&thread_data_list[i]);
     }
 
-    random_sleep(2000, 3000);
+    //random_sleep(2000, 3000);
 
-    for (size_t i = 0; i < shared_data->numthreads; ++i) {
+    for (size_t i = 0; i < numthreads; ++i) {
         pthread_join(threads[i], NULL);
     }
 
