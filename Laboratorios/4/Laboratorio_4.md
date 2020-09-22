@@ -17,7 +17,7 @@ En este caso, es necesario implementar una solución de forma en la que al llega
 Para los escritores:
 
 `Semaforoescritores.wait()
-    #sección crítica para escritores
+#sección crítica para escritores
 Semaforoescritores.post()`
 
 
