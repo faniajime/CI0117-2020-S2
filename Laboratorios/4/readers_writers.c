@@ -110,7 +110,7 @@ int main(int argc, char* arg[]) {
         pthread_create(&threads[i], NULL, writet, (void*)&thread_data_list[i]);
     }
 
-    for (size_t i = readers_num; i < numthreads; ++i) {
+    for (size_t i = writers_num; i < numthreads; ++i) {
         thread_data_list[i].thread_num= i;
         thread_data_list[i].shared_data = shared_data;
         pthread_create(&threads[i], NULL, readt, (void*)&thread_data_list[i]);
