@@ -27,16 +27,12 @@ typedef struct {
 
     double area;
     int rectangles_thread;
-    pthread_mutex_t mutex;
     pthread_mutex_t mutex_area;
-    sem_t semaphore;
-    size_t n_processed;
     double delta;
     size_t n;
     double a;
     double b;
     size_t thread_count;
-    int sobrante;
     pthread_barrier_t barrier;
 
 } shared_data_t;
@@ -78,7 +74,7 @@ void* distribute(void* args ){
     thread_data_t* data = (thread_data_t*) args;
     size_t thread_num = data->thread_num;
     shared_data_t* shared_data = data->shared_data;
-    data->n = shared_data->rectangles_thread;
+    data->n += shared_data->rectangles_thread;
 
 
     data->a = shared_data->a + thread_num*data->n*shared_data->delta;
@@ -89,24 +85,10 @@ void* distribute(void* args ){
 
     pthread_mutex_lock(&shared_data->mutex_area);
     shared_data->area += area;
-    shared_data->n_processed += data->n;
-    printf("current area %f and n_processed %zu\n", shared_data->area, shared_data->n_processed);
-
     pthread_mutex_unlock(&shared_data->mutex_area);
 
     pthread_barrier_wait(&shared_data->barrier);
 
-    pthread_mutex_lock(&shared_data->mutex);
-    if(shared_data->n_processed<shared_data->n){
-        printf("here %zu n_processed and %zu n\n", shared_data->n_processed, shared_data->n);
-        data->n = shared_data->n - shared_data->n_processed;
-        data->a = shared_data->a + shared_data->n_processed*shared_data->delta;
-        data->b = data->a + data->n*shared_data->delta;
-        area = riemann(data->a,data->b,data->n);
-        shared_data->area += area;
-        shared_data->n_processed += data->n;
-    }
-    pthread_mutex_unlock(&shared_data->mutex);
 }
 
 
@@ -137,7 +119,6 @@ int main(int argc, char* arg[]) {
 
     thread_data_t* thread_data_list = malloc((size_t)(thread_count * sizeof(thread_data_t)));
 
-    pthread_mutex_init(&shared_data->mutex, /*attr*/ NULL);
     pthread_mutex_init(&shared_data->mutex_area, /*attr*/ NULL);
 
     shared_data->n = n;
@@ -157,9 +138,12 @@ int main(int argc, char* arg[]) {
         
     shared_data->rectangles_thread = n/thread_count;
     shared_data->thread_count = thread_count;
-    shared_data->sobrante = shared_data->n%shared_data->thread_count;
 
     for (size_t i = 0; i< thread_count ; ++i) {
+        thread_data_list[i].n = 0;
+        if(i==thread_count){
+            thread_data_list[i].n = shared_data->n%shared_data->thread_count;
+        }
         thread_data_list[i].thread_num = i;
         thread_data_list[i].shared_data = shared_data;
         pthread_create(&threads[i], NULL, distribute, (void*)&thread_data_list[i]);
@@ -172,7 +156,6 @@ int main(int argc, char* arg[]) {
     printf("El area es: %.2f\n", shared_data->area);
     printf("El tiempo de duracion fue %f \n", walltime_elapsed(&timer));
 
-    pthread_mutex_destroy(&shared_data->mutex);
     pthread_mutex_destroy(&shared_data->mutex_area);
     
     free(threads);
