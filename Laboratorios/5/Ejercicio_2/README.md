@@ -1,3 +1,5 @@
+Este trabajo fue realizado por Karen Zamora y Fabiola Jimenez
+
 Los tiempos de duracion fueron los siguientes, utilizando un a de 1 y un b de 3
 
 |  n |  area |  serial |  1 |  16 |  32 |   64 |
