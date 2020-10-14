@@ -2,10 +2,16 @@
 #include "../model/running_track.h"
 
 running_track_t* running_track_create() {
+
     running_track_t* running_track = calloc(1, sizeof(running_track_t));
 
     running_track->lanes_start_line = calloc(NUM_LANES, sizeof(int));
     running_track->lanes_finish_line = calloc(NUM_LANES, sizeof(int));
+    running_track->matrix_obstacles = calloc(NUM_LANES, sizeof(int*));
+    for(int i=0; i<OBSTACLES;i++)
+    {
+        running_track->matrix_obstacles[i] = calloc(OBSTACLES,sizeof(int));
+    }
 
     running_track->position = 1;
 
@@ -21,9 +27,8 @@ void running_track_destroy(running_track_t* running_track) {
     pthread_mutex_destroy(&running_track->mutex_position);
     pthread_barrier_destroy(&running_track->barrier_start_line);
 
-    free(running_track->lanes_start_line);
     free(running_track->lanes_finish_line);
-
+    free(running_track->lanes_start_line);
     free(running_track);
 
 }
