@@ -55,7 +55,7 @@ int main(int argc, char* arg[]) {
     pthread_t* threads = malloc((size_t)(thread_count * sizeof(pthread_t)));
     shared_data_t* shared_data = (shared_data_t*)calloc(1, sizeof(shared_data_t));
 
-    shared_data->mutexes = (pthread_mutex_t*)calloc(thread_count, sizeof(pthread_mutex_t));
+    
 
     shared_data->num_threads = thread_count;
     shared_data->position = 0;
