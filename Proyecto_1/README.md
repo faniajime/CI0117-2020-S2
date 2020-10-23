@@ -105,7 +105,6 @@ Las carpetas se encuentran acomodadas de la siguiente manera:
       |     ├── pokemon.h
       |     └──player.h
       ├── view
-      |     └── pokemon.ui
       └──  Makefile
 ```
 La primera carpeta pokemon corre el programa sin la interfaz grafica, la segunda lo corre con la interfaz grafica.
@@ -139,7 +138,8 @@ Player puede elegir su equipo, y determinar si su equipo esta debil.
 Player crea su tipo player_t que se encuentra contenido en cada lado de battlefield, contiene un puntero de punteros a sus pokemones, su id y posicion en el juego.
 
 #### View
-Se encarga de controlar la interfaz grafica.
+Se encarga de controlar la interfaz grafica con codigo xml generado en glade.
+Por el momento la interfaz grafica no esta funcionando bien.
 
 ![diagrama](pokemon.jpg)
 
