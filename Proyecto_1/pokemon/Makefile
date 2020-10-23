@@ -1,0 +1,2 @@
+compile: controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c
+	gcc controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c -lm -o pokemon -pthread
