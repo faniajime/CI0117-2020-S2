@@ -37,10 +37,9 @@ double riemann(double a, double b, int n, int thread_num)
     if(thread_num > n){
         thread_num = n;
     }
-    int r = n/thread_num;
-    #pragma omp parallel for num_threads(thread_num) default(none) shared(delta, n, a,b, r) reduction(+:area)
-    for (int i= 0; i<=r; i++){
-        area += funcion(a+(i*n+delta))*delta;            
+    #pragma omp parallel for num_threads(thread_num) default(none) shared(delta, n, a) reduction(+:area)
+    for (int i= 0; i<=n; i++){
+        area += funcion(a+(i*delta))*delta;            
     }
     return area;
 }
