@@ -6,22 +6,21 @@
 
 using namespace std;
 
-int calculate_sum(char **array, int array_size, double global_sum){
+static void calculate_sum(char **array, int array_size, double* global_sum){
 
     int num_thread = omp_get_thread_num();
     double sum = 0;
 
     for( int i=0; i<array_size; i++)
     {
-        printf("Thread %d: Processing number %s", num_thread, array[num_thread+i]);
-        sum = sum + stoi(array[1+num_thread+i]);
+        printf("Thread %d: Processing number %s \n", num_thread, array[i]);
+        sum = sum + stod(array[i]);
     }
     
     #pragma omp critical
     {
-        global_sum+= sum;
+        *global_sum+= sum;
     }
-    return global_sum;
 }
 
 int main(int argc, char *argv[])
@@ -35,13 +34,14 @@ int main(int argc, char *argv[])
 
     double global_sum = 0.0;
     int global_size = argc-1;
-    thread_nums = global_size;
+    thread_nums = 5;
+    int to_add = global_size/thread_nums;
 
 
     #pragma omp parallel num_threads(thread_nums) shared(global_sum)
     {
         int num_thread = omp_get_thread_num();
-        calculate_sum(&argv[1+num_thread], global_size, global_sum);
+        calculate_sum(argv+1+num_thread*to_add, to_add, &global_sum);
     }            
 
     cout << "Average: " << (global_sum / global_size) << endl;
