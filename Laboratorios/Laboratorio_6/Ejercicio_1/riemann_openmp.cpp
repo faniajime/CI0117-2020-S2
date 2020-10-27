@@ -42,7 +42,6 @@ double riemann(double a, double b, int n, int thread_num)
     for (int i= 0; i<n; i++){
         area += funcion(a+(i*delta))*delta;
     }
-
     return area;
 }
 
