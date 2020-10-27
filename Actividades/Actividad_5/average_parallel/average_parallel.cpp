@@ -26,7 +26,13 @@ static void calculate_sum(char **array, int array_size, double* global_sum){
 int main(int argc, char *argv[])
 {
     if (argc <= 1) {
+
         cout << "Invalid number of parameters.\n";
+        return 1;
+    }
+    if ((argc-1)%5 != 0) {
+
+        cout << "La cantidad de numeros debe ser multiplo de 5.\n";
         return 1;
     }
     int thread_nums;
