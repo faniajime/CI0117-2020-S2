@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-#include<iostream>
+#include <iostream>
 #include <omp.h>
 
 using namespace std;
@@ -37,14 +37,14 @@ double riemann(double a, double b, int n, int thread_num)
     if(thread_num > n){
         thread_num = n;
     }
+    
     #pragma omp parallel for num_threads(thread_num) default(none) shared(delta, n, a) reduction(+:area)
-    for (int i= 0; i<=n; i++){
-        area += funcion(a+(i*delta))*delta;            
+    for (int i= 0; i<n; i++){
+        area += funcion(a+(i*delta))*delta;
     }
+
     return area;
 }
-
-
 
 int main(int argc, char* arg[]) {
     
