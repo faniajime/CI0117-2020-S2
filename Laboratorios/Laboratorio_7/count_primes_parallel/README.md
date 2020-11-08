@@ -1,4 +1,4 @@
-# Contador serial de numeros primos
+# Contador paralelo de numeros primos
 
 La duracion del codigo ejecutado con 100000000 numeros arrojo los siguientes resultados:
 
