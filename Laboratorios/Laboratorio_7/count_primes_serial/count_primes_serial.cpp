@@ -1,75 +1,49 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include <time.h>
 #include <iostream>
-#include <omp.h>
+#include <math.h>
 
 using namespace std;
 
-typedef struct timespec walltime_t;
-
-void walltime_start(walltime_t* start)
-{
-	clock_gettime(CLOCK_MONOTONIC, start);
-}
-
-double walltime_elapsed(const walltime_t* start)
-{
-	walltime_t finish;
-	clock_gettime(CLOCK_MONOTONIC, &finish);
-	double elapsed = (finish.tv_sec - start->tv_sec);
-	elapsed += (finish.tv_nsec - start->tv_nsec) / 1000000000.0;
-	return elapsed;
-}
-
-double funcion(double x)
-{
-    double resultado = 0;
-    resultado = (x*x)+1;
-    //printf("resultado= %f\n",resultado);
-    return resultado;
-}
-
-double riemann(double a, double b, int n, int thread_num)
-{
-    double area = 0;
-    double delta = (b-a)/n;
-    if(thread_num > n){
-        thread_num = n;
+bool isPrime(int number){
+    if(number<2){c;
+        return false;
     }
-    
-    #pragma omp parallel for num_threads(thread_num) default(none) shared(delta, n, a) reduction(+:area)
-    for (int i= 0; i<n; i++){
-        area += funcion(a+(i*delta))*delta;
+    if (number == 2){
+        return true;
     }
-    return area;
+    if (number % 2 == 0){
+        return false;
+    }
+    int last = (int)sqrt(number);
+    for(int i = 3; i<=last; i+=2){
+        if (number % i == 0){
+            return false;
+        }
+    }
+    return true;
 }
 
 int main(int argc, char* arg[]) {
-    
-    walltime_t timer;
+    int finalCount;
 
-    double a;
-    double b;
-    size_t n;
-    size_t thread_count = 0;
-
-    if (argc >= 5) {
-        a = (size_t)strtoul(arg[1], NULL, 10);
-        b = (size_t)strtoul(arg[2], NULL, 10);
-        n = (size_t)strtoul(arg[3], NULL, 10);
-        thread_count = (size_t)strtoul(arg[4], NULL, 10);
+    if (argc >= 2) {
+        finalCount = (int)strtoul(arg[1], NULL, 10);
 
     } else {
         printf("Invalid number of params");
         return 1;
     }
 
-    walltime_start(&timer);
-
-    double area = riemann(a,b,n,thread_count);
-
-    printf("El area es: %.2f\n", area);
-    printf("El tiempo de duracion fue %f \n", walltime_elapsed(&timer));
-
+    bool prime = false;
+    int count =0;
+    for (int i = 2; i<= finalCount; i++){
+        prime = isPrime(i);
+        //printf(" The number %i prime value is %d\n", i, prime);
+        if (prime == true){
+            count+=1;
+        }
+        prime = false;
+    }
+    printf("La cantidad de primos encontrados fue %d, entre 2 y %d\n", count, finalCount);
 }
