@@ -1,12 +1,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
+#include<omp.h>
 #include <math.h>
 
 using namespace std;
 
 bool isPrime(int number){
-    if(number<2){c;
+    if(number<2){
         return false;
     }
     if (number == 2){
@@ -37,6 +38,8 @@ int main(int argc, char* arg[]) {
 
     bool prime = false;
     int count =0;
+    ;
+    #pragma omp parallel for default(none) shared(finalCount) private(prime) reduction(+:count)
     for (int i = 2; i<= finalCount; i++){
         prime = isPrime(i);
         //printf(" The number %i prime value is %d\n", i, prime);
