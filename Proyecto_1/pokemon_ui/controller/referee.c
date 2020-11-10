@@ -98,9 +98,11 @@ void main(void* args){
     battle_field->left_side->player->id = 1;
     battle_field->right_side->player->id = 2;
     
+    int team_1 [3]= {21,2,3};
+    int team_2 [3]= {18,10,4};
 
-    int* team_1 = chooseTeam(battle_field->left_side->player);
-    int* team_2 = chooseTeam(battle_field->right_side->player);
+    /*int* team_1 = chooseTeam(battle_field->left_side->player);
+    int* team_2 = chooseTeam(battle_field->right_side->player);*/
 
     // Se desbloquean los mutexes de los dos primeros pokemones
     pthread_mutex_unlock(&battle_field->left_side->mutex_array[0]);
@@ -143,6 +145,7 @@ void main(void* args){
         }
         pthread_create(&pokemons_right[i], NULL, fight, (void*)&pokemon_derecha[i]);
     }
+    
     for( int i =0; i<3; i++){
         pthread_join(pokemons_right[i], NULL);
     }

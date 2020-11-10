@@ -153,6 +153,7 @@ void* fight(void* args)
     double efectiveness = 0;
     int oponent_id = 0;
     int oponent_type = 0;
+   
 
     walltime_elapsed(&timer);
     printf("El pokemon %s esta listo para pelear \n", pokemon->species_name);
@@ -173,14 +174,14 @@ void* fight(void* args)
                     //sinc
                     
                     efectiveness = calculate_efectiveness(oponent_type, pokemon->charged_move->typeId);
-                    double damage = calculate_damage(pokemon->charged_move->power, efectiveness,BONUS);
+                    damage = calculate_damage(pokemon->charged_move->power, efectiveness,BONUS);
                     pthread_mutex_lock(&battle_field->mutex[1]);
-                    battle_field->battle_info->right_health -= calculate_damage(pokemon->charged_move->power, efectiveness,BONUS);
+                    battle_field->battle_info->right_health -= damage;
                     oponent_health = battle_field->battle_info->right_health;
                     pthread_mutex_unlock(&battle_field->mutex[1]);
                     pokemon->energy -= pokemon->charged_move->energy;
                     pthread_mutex_lock(&battle_field->mutex[0]);
-                    printf("El pokemon %s acaba de hacer un ataque cargado, su salud es %f\n", pokemon->species_name,  battle_field->battle_info->left_health);
+                    printf("El pokemon %s acaba de hacer un ataque cargado de %.2f, su salud es %.2f\n", pokemon->species_name,damage,  battle_field->battle_info->left_health);
                     pokemon->hp = battle_field->battle_info->left_health;
                     pthread_mutex_unlock(&battle_field->mutex[0]);
                     fixed_sleep((useconds_t)pokemon->charged_move->cooldown);
@@ -193,31 +194,36 @@ void* fight(void* args)
                     //sinc
                     efectiveness = calculate_efectiveness(oponent_type, pokemon->fast_move->typeId);
                     pthread_mutex_lock(&battle_field->mutex[1]);
-                    battle_field->battle_info->right_health -= calculate_damage(pokemon->fast_move->power, efectiveness,BONUS);
+                    damage =  calculate_damage(pokemon->fast_move->power, efectiveness,BONUS);
+                    battle_field->battle_info->right_health -= damage;
                     oponent_health = battle_field->battle_info->right_health;
                     pthread_mutex_unlock(&battle_field->mutex[1]);
                     pokemon->energy += pokemon->fast_move->energyGain;
-                    printf("El pokemon %s acaba de hacer un ataque normal, su salud es %f\n", pokemon->species_name, pokemon->hp);
+                    printf("El pokemon %s acaba de hacer un ataque normal de %.2f, su salud es %.2f\n", pokemon->species_name, damage,pokemon->hp);
                     pthread_mutex_lock(&battle_field->mutex[0]);
                     pokemon->hp = battle_field->battle_info->left_health;
                     pthread_mutex_unlock(&battle_field->mutex[0]);
                     fixed_sleep((useconds_t)pokemon->charged_move->cooldown);
                 }
                 pthread_mutex_lock(&battle_field->mutex[0]);
-                if(oponent_health <=0 && battle_field->equipoRocket){
+                if(/*oponent_health <=0 && */battle_field->equipoRocket==1){
+                    printf("last one 2");
                     pokemon->time = walltime_elapsed(&timer);   
                     pthread_mutex_unlock(&battle_field->mutex[0]);
+                    pthread_mutex_unlock(&battle_field->left_side->mutex_array[pokemon->order+1]);
                     pthread_exit(pokemon);
                 }    
                 pthread_mutex_unlock(&battle_field->mutex[0]);
             }
             
-            if(is_team_weak(data->right)){
+            if(isWeak(pokemon) && pokemon->order == 2/*is_team_weak(data->right)*/)
+            {
                 pthread_mutex_lock(&battle_field->mutex[0]);
                 battle_field->equipoRocket =1;
                 pthread_mutex_unlock(&battle_field->mutex[0]);
-                printf("***********equipo1 se debilito\n");
-                return args;
+                printf("Equipo1 se debilito\n");
+                pthread_exit(pokemon);
+                //return args;
             }else if(isWeak(pokemon)){
                 
                 printf("El pokemon %s esta debilitado\n", pokemon->species_name);
@@ -227,7 +233,7 @@ void* fight(void* args)
                 pokemon->time = walltime_elapsed(&timer);   
                 if(pokemon->order == 2){
                     pthread_mutex_lock(&battle_field->mutex[0]);
-                    printf("EQUIPO ROCKEt\n");
+                    printf("Un equipo se ha debilitado\n");
                     battle_field->equipoRocket =1;
                     pthread_mutex_unlock(&battle_field->mutex[0]);
                 }
@@ -237,6 +243,7 @@ void* fight(void* args)
                 pthread_exit(pokemon);
             }
         }
+        pthread_exit(pokemon);
     }
     else
     { //si estamos en la derecha
@@ -255,11 +262,12 @@ void* fight(void* args)
                     //sinc
                     efectiveness = calculate_efectiveness(oponent_type, pokemon->charged_move->typeId);
                     pthread_mutex_lock(&battle_field->mutex[0]);
-                    battle_field->battle_info->left_health -= calculate_damage(pokemon->charged_move->power, efectiveness,BONUS);
+                    damage = calculate_damage(pokemon->charged_move->power, efectiveness,BONUS);
+                    battle_field->battle_info->left_health -= damage;
                     oponent_health = battle_field->battle_info->left_health;
                     pthread_mutex_unlock(&battle_field->mutex[0]);
                     pokemon->energy -= pokemon->charged_move->energy;
-                    printf("El pokemon %s acaba de hacer un ataque cargado, su salud es %f\n", pokemon->species_name, pokemon->hp);
+                    printf("El pokemon %s acaba de hacer un ataque cargado de %.2f, su salud es %.2f\n", pokemon->species_name, damage,pokemon->hp);
                     pthread_mutex_lock(&battle_field->mutex[1]);
                     pokemon->hp = battle_field->battle_info->right_health;
                     pthread_mutex_unlock(&battle_field->mutex[1]);
@@ -272,29 +280,32 @@ void* fight(void* args)
                     //sinc
                     efectiveness = calculate_efectiveness(oponent_type, pokemon->fast_move->typeId);
                     pthread_mutex_lock(&battle_field->mutex[0]);
-                    battle_field->battle_info->left_health -= calculate_damage(pokemon->fast_move->power, efectiveness,BONUS);
+                    damage = calculate_damage(pokemon->fast_move->power, efectiveness,BONUS);
+                    battle_field->battle_info->left_health -= damage;
                     oponent_health = battle_field->battle_info->left_health;
                     pthread_mutex_unlock(&battle_field->mutex[0]);
                     pokemon->energy += pokemon->fast_move->energyGain;
-                    printf("El pokemon %s acaba de hacer un ataque normal, su salud es %f\n", pokemon->species_name, pokemon->hp);
+                    printf("El pokemon %s acaba de hacer un ataque normal de %.2f, su salud es %.2f\n", pokemon->species_name,damage, pokemon->hp);
                     pthread_mutex_lock(&battle_field->mutex[1]);
                     pokemon->hp = battle_field->battle_info->right_health;
                     pthread_mutex_unlock(&battle_field->mutex[1]);
                     fixed_sleep((useconds_t)pokemon->charged_move->cooldown);
                 }
                 pthread_mutex_lock(&battle_field->mutex[0]);
-                if(oponent_health <=0 && battle_field->equipoRocket){
+                if(/*oponent_health <=0 && */battle_field->equipoRocket==1){
+                    printf("last one");
                     pokemon->time = walltime_elapsed(&timer);   
                     pthread_mutex_unlock(&battle_field->mutex[0]);
+                    pthread_mutex_unlock(&battle_field->right_side->mutex_array[pokemon->order+1]);
                     pthread_exit(pokemon);
                 }
                 pthread_mutex_unlock(&battle_field->mutex[0]);
             }
-            if(is_team_weak(data->right)){
+            if(isWeak(pokemon) && pokemon->order == 2/*is_team_weak(data->right)*/){
                 pthread_mutex_lock(&battle_field->mutex[0]);
                 battle_field->equipoRocket = 1;
                 pthread_mutex_unlock(&battle_field->mutex[0]);
-                printf("************equipo2 se debilito\n");
+                printf("Equipo2 se debilito\n");
                 pokemon->time = walltime_elapsed(&timer);   
                 pthread_exit(pokemon);
             }else if(isWeak(pokemon)){
@@ -315,6 +326,8 @@ void* fight(void* args)
                 pthread_exit(pokemon);
             }
         }
+
+        pthread_exit(pokemon);
     }
 }
 

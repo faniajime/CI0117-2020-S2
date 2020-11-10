@@ -1,2 +1,2 @@
-compile: controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c view/battle_field_ui.c
-	gcc `pkg-config --cflags gtk+-3.0 controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c view/battle_field_ui.c -lm -o pokemon -pthread `pkg-config --libs gtk+-3.0`
+compile: controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c
+	gcc controller/referee.c  controller/player.c controller/mapper.c controller/pokemon.c controller/battle_field.c -lm -o pokemon -pthread
