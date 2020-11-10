@@ -40,7 +40,7 @@ int main(int argc, char* arg[]) {
     bool prime = false;
     int count =0;
     
-    #pragma omp parallel for default(none) shared(finalCount) private(prime) reduction(+:count) //schedule(runtime)
+    #pragma omp parallel for default(none) shared(finalCount) private(prime) reduction(+:count) schedule(runtime)
     for (int i = 2; i<= finalCount; i++){
         prime = isPrime(i);
         //printf(" The number %i prime value is %d\n", i, prime);
@@ -49,7 +49,7 @@ int main(int argc, char* arg[]) {
         }
         prime = false;
         
-        printf("Hilo %i Cantidad de hilos utilizados %d\n", omp_get_thread_num(), omp_get_num_threads());
+        //printf("Hilo %i Cantidad de hilos utilizados %d\n", omp_get_thread_num(), omp_get_num_threads());
         
     }
     printf("La cantidad de primos encontrados fue %d, entre 2 y %d\n", count, finalCount);
