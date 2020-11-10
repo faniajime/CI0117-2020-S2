@@ -3,7 +3,7 @@
 El siguiente cuadro muestra los tiempos de duracion para diferentes estrategias de scheduling y diferentes tamanos de chunks. Los tiempos estan dados en milisegundos. El procesador de pruebas que se utilizo corria por deafult con 4 hilos.
 
 |  tipo |  1 |  4 |  2 | 50 000 000 |
-|---|---|---|---|---|---|
+|---|---|---|---|---|
 |  static | 188 005.68  | 180 284.62   | 182 387.16   |  123 466.05  | 
 | dynamic  | 187 799.01  | 181 877.66    | 182 279.16 |  116 909.45   |
 | guided  | 188 096.01  | 181 266.22  | 183 416.84  | 124 792.51  |
