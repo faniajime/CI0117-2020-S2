@@ -10,7 +10,7 @@ El siguiente cuadro muestra los tiempos de duracion para diferentes estrategias 
 
 El tiempo de duracion del programa serial fue de 144 912, 98 y del paralelo simple 165 432, 77.
 
-##### Cual tuvo menor duracion y por que
+#### Cual tuvo menor duracion y por que
 
 Parece que el tipo de scheduling con menor tiempo de duracion fue el dinamico con tamanos de chunk grandes, esto puesto que la manera en la que se distribuyen los chunks de manera dinamica son mas eficientes y porque al tener tamanos de chunks mas grandes el programa no tiene que estar distribuyendo iteraciones, parece que esto afecta el rendimiento. 
 
