@@ -1,4 +1,5 @@
 # Contador ciclico de numeros primos
+Creado por Fabiola Jimenez y Karen Zamora.
 
 El siguiente cuadro muestra los tiempos de duracion para diferentes estrategias de scheduling y diferentes tamanos de chunks. Los tiempos estan dados en milisegundos. El procesador de pruebas que se utilizo corria por deafult con 4 hilos.
 
@@ -16,3 +17,10 @@ Parece que el tipo de scheduling con menor tiempo de duracion fue el dinamico co
 
 #### Scheduling guiado y ejemplo
 
+En el scheduling guiado las iteraciones se asignan a los hilos conforme las van solicitando. El tamano del chunk es proporcional al numero de iteraciones no asignadas, dividido entre el numero de hilos menos 1. Esto hace que progresivamente cada chunk que se distribuya sea mas pequeno que el anterior.
+
+#### Ejemplo:
+Por ejemplo si tenemos 10 iteraciones y 2 hilos, el tamano del primer chunk sera de 4, luego de 1.
+Tal y como se muestra en la siguiente imagen se da la asignacion de chunks segun el tipo de scheduling.
+
+![Ejemplo scheduling](typessch.png)
