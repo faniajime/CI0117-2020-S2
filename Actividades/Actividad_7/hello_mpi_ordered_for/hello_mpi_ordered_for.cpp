@@ -1,5 +1,6 @@
 #include <iostream>
 #include "mpi.h"
+#include <unistd.h>
 
 using namespace std;
 
@@ -17,10 +18,11 @@ int main(int argc, char *argv[]) {
     if(my_id ==0 ){
         for (int i = 1; i<num_processes; i++){
             message_sent = i;
-            MPI_Send(&message_sent, 1 /*count*/, MPI_INT, i /*dest*/, 123 /*message id*/, MPI_COMM_WORLD);
+            MPI_Send(&message_sent, 1 /*count*/, MPI_INT, i /*dest*/, i /*message id*/, MPI_COMM_WORLD);
+            sleep(1);
         }
     }else{
-        MPI_Recv(&message_recieved, 1 /* count*/, MPI_INT, 0 /*source*/, 123 /*message id*/, MPI_COMM_WORLD, &status);
+        MPI_Recv(&message_recieved, 1 /* count*/, MPI_INT, 0 /*source*/, my_id /*message id*/, MPI_COMM_WORLD, &status);
     }
     cout << "Hello. I am process: " << my_id << ". Total processes: " << num_processes << ". I recieved message " << message_recieved << endl;
 
