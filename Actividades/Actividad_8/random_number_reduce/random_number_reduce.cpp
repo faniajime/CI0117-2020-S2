@@ -55,7 +55,7 @@ int main(int argc, char *argv[]) {
     if (my_id ==0){
         cout << "Min is " << min << endl;
         cout << "Max is " << max << endl;
-        cout << "Sum is " << sum << endl;
+        cout << "Average is " << sum/num_processes << endl;
     }
 
 	if ( my_id < num_processes - 1 ) {
