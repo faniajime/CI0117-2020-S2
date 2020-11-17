@@ -24,7 +24,6 @@ int main(int argc, char *argv[]) {
     int min;
     int max;
     int sum;
-    int index = rand() % size;
 
 
     if (my_id == 0) {
@@ -41,7 +40,7 @@ int main(int argc, char *argv[]) {
             cin >> array[i];
         }   
     }
-    
+    int index = rand() % size;
     MPI_Bcast(array, size, MPI_INT, 0, MPI_COMM_WORLD);
     my_value = array[index];  
 
