@@ -24,6 +24,9 @@ int main(int argc, char *argv[]) {
         cout << "Please enter the size of the array: " << endl;
         cin >> size;
         int array[size];
+        int min;
+        int max;
+        int sum;
     }
     MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
@@ -45,17 +48,20 @@ int main(int argc, char *argv[]) {
     }
 
     int index = rand() % size;
+    int my_value = array[index];
 
-
-   
+    MPI_Reduce(&my_value, &max, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&my_value, &min, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
+    MPI_Reduce(&my_value, &sum, 1, MPI_INT, MPI_SUM, 0, MPI_COMM_WORLD);
     if (my_id != 0) {
         MPI_Recv(&message_received, 1 /* count*/, MPI_INT, my_id - 1 /*source*/, 123 /*message id*/, MPI_COMM_WORLD, &status);
     }
 
-    cout << "Hello. I am process: " << my_id << "I chose number  "  << index << endl;
+    cout << "Hello. I am process: " << my_id << "I chose number  "  << my_value << endl;
     if (my_id ==0){
-        cout << "Hello. I am process: " << my_id << "I chose number  "  << index << endl;
-        cout << "Hello. I am process: " << my_id << "I chose number  "  << index << endl;
+        cout << "Min is " << min << endl;
+        cout << "Max is " << max << endl;
+        cout << "Sum is " << sum << endl;
     }
 
 	if ( my_id < num_processes - 1 ) {
