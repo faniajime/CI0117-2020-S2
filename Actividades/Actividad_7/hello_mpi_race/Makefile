@@ -1,2 +1,2 @@
-compile: hello_mpi_ordered_for.cpp
-	mpic++ hello_mpi_ordered_for.cpp -o hello_mpi_ordered_for
+compile: hello_mpi_race.cpp
+	mpic++ hello_mpi_race.cpp -o hello_mpi_race
