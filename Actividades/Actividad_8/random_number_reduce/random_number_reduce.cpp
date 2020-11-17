@@ -8,6 +8,7 @@ using namespace std;
 
 
 int main(int argc, char *argv[]) {
+    int my_value;
 
     int my_id, num_processes;
     int message_received, message_sent;
@@ -20,35 +21,29 @@ int main(int argc, char *argv[]) {
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     int size;
 
+    int min;
+    int max;
+    int sum;
+    int index = rand() % size;
+
+
     if (my_id == 0) {
         cout << "Please enter the size of the array: " << endl;
         cin >> size;
-        int array[size];
-        int min;
-        int max;
-        int sum;
     }
+
     MPI_Bcast(&size, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+    int array[size];
     if (my_id == 0) {
         for(int i =0; i<size; i++){
             cout << "Insert the  " << i<< " number of the array: " << endl;
             cin >> array[i];
         }   
-
     }
-
-    MPI_Bcast(&array, size, MPI_INT, 0, MPI_COMM_WORLD);
-
-    if (my_id != 0) {
-        MPI_Recv(&message_received, 1 /* count*/, MPI_INT, my_id - 1 /*source*/, 123 /*message id*/, MPI_COMM_WORLD, &status);
-        int buffer_array[message_received];
-        MPI_Recv(&message_received, 1 /* count*/, MPI_INT, my_id - 1 /*source*/, 123 /*message id*/, MPI_COMM_WORLD, &status);
-        buffer_array = message_received;
-    }
-
-    int index = rand() % size;
-    int my_value = array[index];
+    
+    MPI_Bcast(array, size, MPI_INT, 0, MPI_COMM_WORLD);
+    my_value = array[index];  
 
     MPI_Reduce(&my_value, &max, 1, MPI_INT, MPI_MAX, 0, MPI_COMM_WORLD);
     MPI_Reduce(&my_value, &min, 1, MPI_INT, MPI_MIN, 0, MPI_COMM_WORLD);
@@ -57,7 +52,7 @@ int main(int argc, char *argv[]) {
         MPI_Recv(&message_received, 1 /* count*/, MPI_INT, my_id - 1 /*source*/, 123 /*message id*/, MPI_COMM_WORLD, &status);
     }
 
-    cout << "Hello. I am process: " << my_id << "I chose number  "  << my_value << endl;
+    cout << "Hello. I am process: " << my_id << ". I chose number  "  << my_value << endl;
     if (my_id ==0){
         cout << "Min is " << min << endl;
         cout << "Max is " << max << endl;
