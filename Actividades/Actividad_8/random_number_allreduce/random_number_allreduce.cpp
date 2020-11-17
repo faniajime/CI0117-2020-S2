@@ -62,8 +62,12 @@ int main(int argc, char *argv[]) {
         cout << "Hello. I am process: " << my_id << ". I chose: " << my_value << ". My value is above the average (" << average << ")." << endl;
 
     }
-    else{
+    else if (my_value < average){
         cout << "Hello. I am process: " << my_id << ". I chose: " << my_value << ". My value is below the average (" << average << ")." << endl;
+    }
+    else
+    {
+        cout << "Hello. I am process: " << my_id << ". I chose: " << my_value << ". My value is equal to the average (" << average << ")." << endl;
     }
 
 	if ( my_id < num_processes - 1 ) {
