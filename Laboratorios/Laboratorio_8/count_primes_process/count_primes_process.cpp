@@ -78,11 +78,11 @@ int main(int argc, char *argv[]) {
     
     if(my_id != 0){
         message_sent = total;
-        printf("total %d from thread %d\n", total, my_id);
+        //printf("total %d from thread %d\n", total, my_id);
         MPI_Send(&message_sent, 1 /*count*/, MPI_INT, 0 /*dest*/, my_id /*message id*/, MPI_COMM_WORLD);
     }
     if (my_id == 0){
-        printf("total %d from thread %d\n", total, my_id);
+        //printf("total %d from thread %d\n", total, my_id);
         for(int i = 1; i<num_processes; i++){
             MPI_Recv(&message_received, 1 /* count*/, MPI_INT, i /*source*/, i /*message id*/, MPI_COMM_WORLD, &status);
             total+= message_received;
