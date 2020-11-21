@@ -14,8 +14,8 @@ Las corridas se realizaron con un numero de 100000000 tres veces.
 |count_primes_reduction| 16  | 64.821625  | 66.782605  | 66.349952 |
 |count_primes_reduction| 32  | 66.676823  | 68.778798  | 68.576306 |
 |count_primes_reduction| 64  | 65.460857  | 66.282078  | 65.992454  |
-|count_primes_all_reduce|  1 | 88.654710  |87.793338  | 87.885886   |
-|count_primes_all_reduce| 16  | 64.821625  | 66.782605  | 66.349952 |
-|count_primes_all_reduce| 32  | 66.676823  | 68.778798  | 68.576306 |
-|count_primes_all_reduce| 64  | 65.460857  | 66.282078  | 65.992454  |
+|count_primes_all_reduce|  1 | 88.876599  |89.297862  | 89.299594  |
+|count_primes_all_reduce| 16  | 65.009387  | 65.871123  | 68.81825 |
+|count_primes_all_reduce| 32  | 68.818259  | 67.410608  | 72.490510 |
+|count_primes_all_reduce| 64  | 66.333065  | 66.142965  | 69.170663  |
 
