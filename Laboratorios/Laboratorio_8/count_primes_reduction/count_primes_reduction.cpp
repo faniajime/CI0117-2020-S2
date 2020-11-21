@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     double starttime, endtime;
-    starttime = MPI_Wtime();
+    
     int total = 0;
     int total_global;
 
@@ -48,7 +48,7 @@ int main(int argc, char *argv[]) {
         cout<<"Escriba el numero hasta el que desea contar los numeros primos"<<endl;
         cin>> finalCount;
     }
-
+    starttime = MPI_Wtime();
     MPI_Bcast(&finalCount, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
     bool prime = false;

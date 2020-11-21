@@ -39,7 +39,7 @@ int main(int argc, char *argv[]) {
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     double starttime, endtime;
-    starttime = MPI_Wtime();
+
     int total = 0;
 
     if (argc >= 2) {
@@ -49,6 +49,7 @@ int main(int argc, char *argv[]) {
         printf("Invalid number of params");
         return 1;
     }
+    starttime = MPI_Wtime();
     bool prime = false;
     int count = 0;
     if (finalCount < num_processes){
