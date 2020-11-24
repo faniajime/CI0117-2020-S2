@@ -5,8 +5,11 @@
 
 class World_Element
 {
+    public:
+        string* get_actions(){};
     private:
-        void get_actions(){};
+        string* actions;
+       
 };
 
 class Coin: public World_Element
@@ -53,7 +56,4 @@ class koopaTroopa: public World_Element
     private:
         int current_position;
         void updateWorld(){};
-
-        
-
  };
