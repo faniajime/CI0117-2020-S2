@@ -1,5 +1,7 @@
-#include "Mario.h"
 #include <math.h>
+#include <time.h>
+#include "Mario.h"
+#include "world.h"
 
 using namespace std;
 
@@ -35,9 +37,10 @@ int Mario::isAlive()
     return alive;
 }
 
- void Mario::chooseAction(/Element element/) //Mario choose what to do when found an object
+ void Mario::chooseAction(Elements element) //Mario choose what to do when found an object
  {
-    double random = random();
+    srand(time(0));
+    double random = (double) rand()/RAND_MAX;
     if(element== Goomba || element == KoopaTroopa)
     {
        foundEnemy(element,random);
@@ -64,7 +67,7 @@ int Mario::isAlive()
     }    
  }
 
- int Mario :: foundEnemy(Element element,double probability)
+ int Mario :: foundEnemy(Elements element,double probability)
  {
     if(element== Goomba)
     {

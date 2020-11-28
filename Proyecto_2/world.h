@@ -3,6 +3,16 @@
 
  using namespace std;
 
+
+enum Elements
+{
+    Hole =1,
+    Goomba =2,
+    KoopaTroopa =3,
+    Coin = 4,
+};
+
+
 class World_Element
 {
     public:
