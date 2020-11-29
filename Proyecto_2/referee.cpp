@@ -110,5 +110,4 @@ bool game_finished(int* active, int size){
     }else{
         return false;
     }
-
 }
