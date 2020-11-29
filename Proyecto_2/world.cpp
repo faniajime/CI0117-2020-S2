@@ -27,9 +27,7 @@ void World::refreshWorld(World world, int koopatroopas){
     }
 };
 void World::addElement(World world, int koopatroopas){
-    if( world.world_size - world.current_position < 10){
-        pass;
-    }else{
+    if( world.world_size - world.current_position > 10){
         for( int i =0; i<koopatroopas; i++){
             world.myWorld[world.current_position+10].push_back(2);
         }
