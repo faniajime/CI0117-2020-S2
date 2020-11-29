@@ -4,32 +4,32 @@
 
 using namespace std;
 
-World::World(World world, vector<vector<int>> baseWorld){
-    world.myWorld = baseWorld;
-    world.world_size = baseWorld.size();
+World::World( vector<vector<int>> baseWorld){
+    this->myWorld = baseWorld;
+    this->world_size = baseWorld.size();
 };
 
 World::~World(){
-    free(world->myWorld);
+    free(this->myWorld);
 };
 
-vector<int> World::getNext(World world){
-    world.current_position+=1;
-    return world.myWorld[world.current_position];
+vector<int> World::getNext(){
+    this->current_position+=1;
+    return this->myWorld[this->current_position];
 };
 
-void World::refreshWorld(World world, int koopatroopas){
+void World::refreshWorld( int koopatroopas){
     if(koopatroopas){
-        world.myWorld = baseWorld;
-        world.addElement(koopatroopas);
+        this->myWorld = baseWorld;
+        this->addElement(koopatroopas);
     }else{
-        world.myWorld = baseWorld;
+        this->myWorld = baseWorld;
     }
 };
-void World::addElement(World world, int koopatroopas){
-    if( world.world_size - world.current_position > 10){
+void World::addElement( int koopatroopas){
+    if( this->world_size - this->current_position > 10){
         for( int i =0; i<koopatroopas; i++){
-            world.myWorld[world.current_position+10].push_back(2);
+            this->myWorld[this->current_position+10].push_back(2);
         }
     }
 };
