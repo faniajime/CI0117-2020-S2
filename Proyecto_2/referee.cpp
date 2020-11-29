@@ -48,9 +48,7 @@ int main(int argc, char *argv[])
         if (my_id == printer){
             MPI_Recv( &es,1 , MPI_INT , 0 , 0 , MPI_COMM_WORLD, &status);
         }
-        while(!sincronization){
-
-        }
+        while(!sincronization){}
 
         Mario* mario = new Mario(my_id);
 
@@ -110,4 +108,8 @@ bool game_finished(int* active, int size){
     }else{
         return false;
     }
+}
+
+int choose_new_printer(){
+    
 }
