@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     int coins[num_processes];
     int attacking[num_processes];
     int activePlayers[num_processes];
-    int goombas[num_processes];
+    int goombas[num_processes]; 
     int printer = 0;
     bool finished = 0;
     int mycoins= 0;
@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
             MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //pensar esta mejor
             MPI_Allgather(&mario->isAlive(), 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
             MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
 
 
             /*
@@ -87,6 +88,13 @@ int main(int argc, char *argv[])
                 //Se imprime
             }
 
+            //SETEAR LOS ARREGLOS QUE SEAN NECESARIOS EN CERO
+
+            MPI_Allgather(&mario->getCoins(), 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //pensar esta mejor
+            MPI_Allgather(&mario->isAlive(), 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD); //PENSAR COMO CAMBIARLO
+            MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD); //ANADIR LOGICA DE KOOPATROPAS
 
         }
         while(!finished){}
