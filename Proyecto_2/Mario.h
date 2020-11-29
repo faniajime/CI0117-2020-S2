@@ -1,5 +1,10 @@
 #ifndef MARIO_H
 #define MARIO_H
+
+#include <math.h>
+#include <time.h>
+#include "world.h"
+
 using namespace std;
 
 
@@ -9,16 +14,19 @@ class Mario
         int location;
 		int coins;
         int isActive;
-		
-        
+        int id;  
 
     public:
-        Mario();
+        World world;
+        Mario(int);
         ~Mario();
         int getCoins();
         void setCoins(int);
+        int getLocation();
+        void setLocation();//********************revisar********************************
+        int getId();
         int isAlive();
-        void chooseAction(Elements); //Mario choose what to do when found an element
+        int chooseAction(Elements); //Mario choose what to do when found an element
         void foundACoin(double);
         int foundEnemy(Elements,double);
         void foundAHole(double);

@@ -1,16 +1,15 @@
-#include <math.h>
-#include <time.h>
 #include "Mario.h"
 #include "world.h"
 
 using namespace std;
 
 
-Mario::Mario()
+Mario::Mario(int id)
 {
     this->coins = 0;
     this->isActive = 1;
     this->location = 0;
+    this->id = id;
 }
 
 Mario:: ~Mario()
@@ -28,6 +27,20 @@ int Mario::getCoins()
     return this->coins;
 }
 
+int Mario:: getLocation()
+{
+    return this->location;
+}
+
+void Mario:: setLocation()
+{
+    this->location+=1;
+}
+
+int Mario:: getId()
+{
+    return this->id;
+}
 
 int Mario::isAlive()
 {
@@ -37,13 +50,14 @@ int Mario::isAlive()
     return alive;
 }
 
- void Mario::chooseAction(Elements element) //Mario choose what to do when found an object
+ int Mario::chooseAction(Elements element) //Mario choose what to do when found an object
  {
     srand(time(0));
+    int killedEnemy = 0;
     double random = (double) rand()/RAND_MAX;
     if(element== Goomba || element == KoopaTroopa)
     {
-       foundEnemy(element,random);
+       killedEnemy = foundEnemy(element,random);
     }
     else if(element== Hole)
     {
@@ -53,6 +67,7 @@ int Mario::isAlive()
     {
         foundACoin(random);
     }
+    return killedEnemy;
  }
 
  void Mario::foundACoin(double probability)
@@ -69,6 +84,7 @@ int Mario::isAlive()
 
  int Mario :: foundEnemy(Elements element,double probability)
  {
+    int killedEnemy = 0;
     if(element== Goomba)
     {
         if(probability<= 0.05)
@@ -83,14 +99,14 @@ int Mario::isAlive()
         else
         {
             jumpAndDefeat();
+            killedEnemy = 1;
         }        
     }
     else
     {
         if(probability <= 0.10)
         {
-            dontJump();
-            this->isActive = 0;
+            dontJump();            
         }
         else if(probability> 0.10 && probability <= 0.63)
         {
@@ -99,13 +115,20 @@ int Mario::isAlive()
         else
         {
             jumpAndDefeat();
+            killedEnemy = 1;
         }        
     }    
+    return killedEnemy;
  }
      
- int foundHole(double probability)
+ void Mario::foundAHole(double probability)
  {
-
+    if(probability<=0.5)
+    {
+        dontJump();
+    }
+    else 
+        jump();
  }
 
  void Mario::jump() // Mario jump if there's a hole, goomba or koopa troopa
@@ -120,5 +143,5 @@ int Mario::isAlive()
 
  void Mario:: dontJump()// Mario doesn't jump and get killed
  {
-     
+    this->isActive = 0;
  }
