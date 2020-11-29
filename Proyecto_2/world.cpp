@@ -7,6 +7,7 @@ using namespace std;
 World::World( vector<vector<int>> baseWorld){
     this->myWorld = baseWorld;
     this->world_size = baseWorld.size();
+    this->current_position = 0;
 };
 
 World::~World(){
@@ -18,14 +19,14 @@ vector<int> World::getNext(){
     return this->myWorld[this->current_position];
 };
 
-void World::refreshWorld( int koopatroopas){
-    if(koopatroopas){
-        this->myWorld = baseWorld;
-        this->addElement(koopatroopas);
-    }else{
-        this->myWorld = baseWorld;
-    }
+vector<int> World::getPosition(){
+    return this->myWorld[this->current_position];
 };
+
+void World::refreshWorld( ){
+    this->myWorld = baseWorld;
+};
+
 void World::addElement( int koopatroopas){
     if( this->world_size - this->current_position > 10){
         for( int i =0; i<koopatroopas; i++){
