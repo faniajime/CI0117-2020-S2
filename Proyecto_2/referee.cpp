@@ -94,7 +94,7 @@ int main(int argc, char *argv[])
             MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //pensar esta mejor
             MPI_Allgather(&mario->isAlive(), 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
             MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD); //PENSAR COMO CAMBIARLO
-            MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD); //ANADIR LOGICA DE KOOPATROPAS
+            MPI_Allgather(&KoopaTroopa, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD); //ANADIR LOGICA DE KOOPATROPAS
 
         }
         while(!finished){}
