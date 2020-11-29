@@ -6,21 +6,24 @@ using namespace std;
 
 enum Estrategies
 {
-    R ,// random
-    L,// less coins
-    M,// more coins
-    A // 
+    R = 1,// random
+    L = 2,// less coins
+    M = 3,// more coins
+    A = 4 // attacker
 };
 
 class PLayer
 {
     private:
         Mario mario;
+        Estrategies my_strategy;
         //World world;************es necesario?*********
     public:
         Player();
+        PLayer(Estrategies)
         ~PLayer();
-        void chooseEstrategy(Estrategies estrategy);
+        void setEstrategy();
+
 
 
     
