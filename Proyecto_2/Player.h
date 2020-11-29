@@ -12,7 +12,7 @@ enum Estrategies
     A = 4 // attacker
 };
 
-class PLayer
+class Player
 {
     private:
         Mario mario;

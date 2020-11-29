@@ -9,6 +9,9 @@
 
 int main(int argc, char *argv[])
 {
+
+    //agregar logica de jugador
+
     MPI_Init(&argc, &argv);
     int my_id, num_processes;
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -18,13 +21,13 @@ int main(int argc, char *argv[])
     int coins[num_processes];
     int attacking[num_processes];
     int activePlayers[num_processes];
-    int goobas[num_processes];
+    int goombas[num_processes];
     int printer = 0;
     bool finished = 0;
-    int coins;
-    int attacking;
-    int active;
-    int goobas;
+    int mycoins= 0;
+    int iattacking=0;
+    int iactive=1;
+    int mygoombas=0;
     int es;
     int sincronization=0;
 
@@ -35,13 +38,13 @@ int main(int argc, char *argv[])
         cout << "Digite el numero de proceso que se encargara de imprimir";
         cin>>printer;
         while(!finished){
-            MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);// HAY QUE DETERMINAR LA FUNCION DE ESTE BCAST
+            MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
             MPI_Send(&es, 1 , MPI_INT , printer , 0 , MPI_COMM_WORLD);
             sincronization=1;
-            MPI_Bcast(&sincronization, 1, MPI_INT, 0, MPI_COMM_WORLD);// HAY QUE DETERMINAR LA FUNCION DE ESTE BCAST
+            MPI_Bcast(&sincronization, 1, MPI_INT, 0, MPI_COMM_WORLD);
             finished = game_finished(&allActivePlayers, num_processes);
-            MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);// HAY QUE DETERMINAR LA FUNCION DE ESTE BCAST
-
+            MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
+            //agregar logica de sincronizacion en caso de que faltes
         }
     }
     if(my_id != 0 ){
@@ -56,18 +59,16 @@ int main(int argc, char *argv[])
         while (mario.isAlive()){
             MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);// HAY QUE DETERMINAR LA FUNCION DE ESTE BCAST
 
-            MPI_Allgather(&coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&activePlayers, 1 , MPI_INT , active , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&goobas, 1 , MPI_INT , goobas , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&mario->getCoins(), 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //pensar esta mejor
+            MPI_Allgather(&mario->isAlive(), 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
 
 
             /*
                 Calcular a quien atacar
                 calcular cantos bichitos meter en el mundo
-
             */
-            /*refrescar el mundo*/
             if(mario->world->current_position ==0){
                 vector<int> elements = mario->world->getPositon();
             }else{
@@ -111,5 +112,5 @@ bool game_finished(int* active, int size){
 }
 
 int choose_new_printer(){
-    
+
 }
