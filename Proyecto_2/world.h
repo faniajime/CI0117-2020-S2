@@ -1,14 +1,18 @@
- #include <iostream>
- #include <string>
+#include <iostream>
+#include <string>
+#include <vector>
 
- using namespace std;
+using namespace std;
+
+
+const vector<vector<int>> baseWorld = {{}{}{}{}{}{}{}{}{4}{}{4}{2,4}{}{}{}{}{}{}{}{2}{}{}{}{}{2}{2}{}{}{}{}{}{4}{}{1}{1}{}{}{}{4}{}{}{}{1,1}{1}{}{}{4}{2}{2}{4}{}{}{4,3}{4}{}{4}{2}{2}{}{}{}{2}{2}{2}{2}{}{}{}{}{}{}{}{}{}{}{1}{1}{}{}{}{}{}{}{}{4}{}{2}{2}{}{}{}{}{}{}{}{}{}{}};
 
 
 enum Elements
 {
-    Hole =1,
-    Goomba =2,
-    KoopaTroopa =3,
+    Hole = 1,
+    Goomba = 2,
+    KoopaTroopa = 3,
     Coin = 4,
 };
 
@@ -19,7 +23,6 @@ class World_Element
         string* get_actions(){};
     private:
         string* actions;
-       
 };
 
 class Coin: public World_Element
@@ -52,12 +55,13 @@ class koopaTroopa: public World_Element
 
  class World
  {  
-    void initialize(){};
-    void destroy_world(){};
+    World(vector<vector<int>> baseWorld){};
+    ~Mario(){};
     public:
         World_Element* my_world;
         void getNext();
     private:
         int current_position;
-        void updateWorld(){};
+        void refreshWorld(){};
+        void addElement(){};
  };
