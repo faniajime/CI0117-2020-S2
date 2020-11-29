@@ -20,11 +20,11 @@ int main(int argc, char *argv[])
     int goobas[num_processes];
     int printer = 0;
     bool finished;
+    int coins;
+    int attacking;
+    int active;
+    int goobas;
     
-    int allCoins[num_processes];
-    int allAttacking[num_processes];
-    int allActivePlayers[num_processes];
-    int allGoobas[num_processes];
 
     if(my_id ==0){
         
@@ -37,13 +37,14 @@ int main(int argc, char *argv[])
     if(my_id != 0 ){
         Mario* mario = new Mario(my_id);
 
+
         while (mario.isAlive()){
             MPI_Bcast(, 1, MPI_INT, 0, MPI_COMM_WORLD);// HAY QUE DETERMINAR LA FUNCION DE ESTE BCAST
 
-            MPI_Allgather(&coins, 1 , MPI_INT , &allCoins , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&attacking, 1 , MPI_INT , &allAttacking , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&activePlayers, 1 , MPI_INT , &allActivePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
-            MPI_Allgather(&goobas, 1 , MPI_INT , &allGoobas , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&activePlayers, 1 , MPI_INT , active , 1 , MPI_INT , MPI_COMM_WORLD);
+            MPI_Allgather(&goobas, 1 , MPI_INT , goobas , 1 , MPI_INT , MPI_COMM_WORLD);
 
 
             /*
