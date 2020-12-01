@@ -89,12 +89,14 @@ int main(int argc, char *argv[])
 
     for(int i = 0; i<num_processes; i++){
         if( i == my_id && imprinter){
-        cout << "I'm process " << my_id << ". And I found the largest jaccard" << endl;
-        cout << "\nEvaluated text: \n\"" << test_text << "\"" << endl;
-        cout << "\nMost similar text: \n\"" << most_similar_text << "\"" << endl;
-        printf("\nJaccard similarity score: %.6f\n", max_jaccard_similarity);
+            cout << "I'm process " << my_id << ". And I found the largest jaccard" << endl;
+            cout << "\nEvaluated text: \n\"" << test_text << "\"" << endl;
+            cout << "\nMost similar text: \n\"" << most_similar_text << "\"" << endl;
+            printf("\nJaccard similarity score: %.6f\n", max_jaccard_similarity);
+            printf("\n======================================================================================\n");
+
         }else{
-            sleep(0.05);
+            sleep(0.1);
         }
     }
     
