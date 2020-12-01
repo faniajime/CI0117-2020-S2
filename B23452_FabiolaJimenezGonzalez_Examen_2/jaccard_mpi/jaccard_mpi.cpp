@@ -4,6 +4,7 @@
 #include <vector>
 #include "mpi.h"
 #include <cmath>
+#include <unistd.h>
 
 using namespace std;
 
@@ -76,7 +77,7 @@ int main(int argc, char *argv[])
             }
         }
         iterations++;
-        my_turn = iterations%(num_processes-1);
+        my_turn = iterations%(num_processes);
     }
     MPI_Allreduce(&max_jaccard_similarity, &largest_jaccard_found, 1, MPI_DOUBLE , MPI_MAX , MPI_COMM_WORLD);
 
@@ -86,11 +87,15 @@ int main(int argc, char *argv[])
     matrix_file.close();
     text_file.close();
 
-    if(imprinter){
+    for(int i = 0; i<num_processes; i++){
+        if( i == my_id && imprinter){
         cout << "I'm process " << my_id << ". And I found the largest jaccard" << endl;
         cout << "\nEvaluated text: \n\"" << test_text << "\"" << endl;
         cout << "\nMost similar text: \n\"" << most_similar_text << "\"" << endl;
         printf("\nJaccard similarity score: %.6f\n", max_jaccard_similarity);
+        }else{
+            sleep(0.05);
+        }
     }
     
     MPI_Finalize();

@@ -1,0 +1,37 @@
+Modifique el programa jaccard_similarity.cpp adjunto para que el cálculo de la unión y la intersección de cada fila de la matriz sea realizado de forma paralela utilizando memoria compartida con directivas de OpenMP
+El hilo principal (main) se mantendrá como el encargado de leer los archivos e iterar sobre ellos sin embargo para cada línea de los archivos el programa principal creará hilos (la cantidad por defecto) para iterar sobre los vectores/strings siendo comparados
+Asegúrese de forzar la especificación del scope de las variables utilizadas dentro del bloque paralelo y utilice las directivas de OpenMP que considere necesarias para lograr paralelismo y obtener el mismo resultado que la solución serial
+Se evaluará
+El programa modificado utilizando OpenMP compila y se ejecuta correctamente con los conjuntos de datos adjuntos
+El programa modificado utilizando OpenMP se ejecuta correctamente con los conjuntos de datos de prueba del profesor
+Sigue instrucciones con respecto a lo que se está solicitando y a la sección específica del código que se debe paralelizar
+Uso correcto de las directivas de OpenMP y paralelismo de la solución
+Responda lo siguiente
+Explique cada una de las directivas de OpenMP que utilizó y cómo funcionan dentro del programa
+Explique de forma general cómo se está dando la repartición de tareas entre hilos en su solución
+Modifique el programa jaccard_similarity.cpp adjunto para que haya varios procesos utilizando MPI Cada proceso debe calcular por separado una similitud Jaccard local y luego "coordine" con los demás procesos para determinar cuál fue la mayor similud Jaccard obtenida a nivel global
+Cada proceso debe leer los archivos (Note que esto es permitido y dado que ningún proceso va a modificar los archivos no debería haber problemas)
+Cada proceso va a iterar de forma continua sobre todas las lineas de los archivos desde la primera (no se debe intentar hacer saltos y no se debe intentar hacer que un proceso empiece a leer desde cierto punto esto para no hacer la solución más compleja de lo necesario)
+Sin embargo debe asegurarse de que cada proceso realice el conteo de la unión y la intersección solamente de una parte del total de filas
+ y que dicha parte sea diferente a la procesada por los demás
+Por ejemplo cada proceso hará lo siguiente
+Una vez que cada proceso haya terminado de recorrer todos los archivos se debe comunicar con los demás utilizando MPI para obtener el valor de la similitud Jaccard más alto obtenido a nivel global En este punto cada proceso debe verificar si su valor obtenido fue el más alto y si es el caso sólamente dicho proceso imprimirá el resultado
+Se evaluará
+El programa modificado utilizando MPI compila y se ejecuta correctamente con los conjuntos de datos adjuntos
+El programa modificado utilizando MPI se ejecuta correctamente utilizando los conjuntos de datos de prueba del profesor
+Sigue instrucciones con respecto a todo lo que se está solicitando y a la sección específica del código que se debe paralelizar
+Uso correcto de las funciones MPI y sincronización entre procesos
+Responda lo siguiente
+¿Cuál o cuáles funciones de MPI consideró necesarias para la solución de este problema y explique cómo funciona(n) en su código?
+Explique cómo realizó la repartición de tareas entre los procesos
+Cree al menos 2 conjuntos de datos (datasets) adicionales para realizar pruebas con sus programas Para cada conjunto de datos debe generar el archivo con los textos y el archivo con la matriz Puede utilizar esta herramienta
+Asegúrese de que uno de los conjuntos de datos propuestos tenga al menos 50 textos (párrafos) Por ejemplo puede buscar un artículo de algún tema de interés en Internet copiar el texto y obtener la matriz utilizando la herramienta indicada
+Asegúrese de que uno de los conjuntos de datos propuestos obtenga un "empate" en la similitud Jaccard máxima entre el texto de prueba y dos de los textos del resto del conjunto
+Incluya los conjuntos de datos en un folder datasets dentro del archivo zip No incluya los datasets dados por el profesor
+Se evaluará
+Sigue instrucciones con respecto a todo lo que se está solicitandor
+Documente el resultado obtenido luego de correr el programa con cada uno de los conjuntos de datos propuestos y explique si tuvo que realizar alguna modificación a su programa
+Para todas sus soluciones puede asumir que los archivos requeridos vienen con el número correcto de líneas y con el formato esperado por el programa (No es necesario hacer validaciones extra)
+Muchos Éxitos!
+Modificar las directivas OpenMP fue mas sencillo que modificar jaccard_similarity.cpp usando mpi
+Esto estara funcionando correctamente?
