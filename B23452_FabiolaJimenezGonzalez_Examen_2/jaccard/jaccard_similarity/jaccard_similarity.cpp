@@ -50,8 +50,9 @@ int main(int argc, char *argv[])
                 ++words_intersection;
             }
         }
-        jaccard_similarity = words_intersection / words_union; // Calculate Jaccard similarity score
 
+        jaccard_similarity = words_intersection / words_union; // Calculate Jaccard similarity score
+        cout << jaccard_similarity << endl;
         if (jaccard_similarity > max_jaccard_similarity) { // Update highest Jaccard score if it is greater than the previous one
             max_jaccard_similarity = jaccard_similarity;
             most_similar_text = text_row;

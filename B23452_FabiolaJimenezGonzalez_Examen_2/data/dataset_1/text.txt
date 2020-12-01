@@ -1,0 +1,7 @@
+crear programas escalables que involucran diferentes procesos
+La comunicacion se puede dar a traves de redes de computadoras
+comunicacion mediante paso de mensajes
+cada proceso tiene su propia memoria exclusiva
+openpm permite crear programas paralelos en c++ y fortran
+la concurrencia es declarativa ya que no se requiere manipular directamente los hilos
+cada hilo puede tener acceso a toda la memoria disponible

@@ -1,2 +1,2 @@
-compile: jaccard_similarity.cpp
-	g++ jaccard_similarity.cpp -o jaccard_similarity
+compile: jaccard_omp.cpp
+	g++ -g -Wall -fopenmp jaccard_omp.cpp -o jaccard_omp

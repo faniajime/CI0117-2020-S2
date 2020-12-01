@@ -23,9 +23,6 @@ class Player
         PLayer(Estrategies)
         ~PLayer();
         void setEstrategy();
-
-
-
     
 };
 #endif
