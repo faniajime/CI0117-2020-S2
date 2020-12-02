@@ -4,16 +4,17 @@
 Player::Player(int id)
 {   
     this->id = id;
-    this->mario = new Mario(id);
+    //this->mario = new Mario(id);
+    mario(id);
     randomStrategy();
 }
 
-Player::~PLayer()
+Player::~Player()
 {
 
 }
 
-void PLayer::randomStrategy()
+void Player::randomStrategy()
 {
     int random = rand()%4;
     if(random ==1)
@@ -34,7 +35,7 @@ void PLayer::randomStrategy()
     }       
 }
 
-void PLayer::setStrategy(Estrategies strategy)
+void Player::setEstrategy(Estrategies strategy)
 {
-    this->my_strategy = strategy;
+    this->strategy = strategy;
 }

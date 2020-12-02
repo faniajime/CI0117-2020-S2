@@ -1,2 +1,2 @@
 compile: world.cpp
-	mpic++ world.cpp -o super_mario
+	mpic++ world.cpp Mario.cpp Player.cpp referee.cpp -o super_mario

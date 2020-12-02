@@ -65,7 +65,7 @@ int Mario::isAlive()
     }
     else
     {
-        if(foundACoin(random==1)
+        if(foundACoin(random==1))
         {
             action = 1;
         }

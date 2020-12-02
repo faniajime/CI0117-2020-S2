@@ -16,12 +16,12 @@ class Player
 {
     private:
         int id;        
-        Estrategies my_strategy;
+        Estrategies strategy;
         void randomStrategy();
     public:
-        Mario mario(this->id);
+        Mario mario(int);
         Player(int);
-        ~PLayer();
+        ~Player();
         void setEstrategy(Estrategies);
         int getId();
 

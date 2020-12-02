@@ -4,14 +4,15 @@
 
 using namespace std;
 
-World::World( vector<vector<int>> baseWorld){
+World::World( ){
     this->myWorld = baseWorld;
     this->world_size = baseWorld.size();
     this->current_position = 0;
 };
 
-World::~World(){
-    free(this->myWorld);
+World::~World()
+{
+    
 };
 
 vector<int> World::getNext(){
