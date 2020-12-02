@@ -21,13 +21,13 @@ class Mario
         Mario(int);
         ~Mario();
         int getCoins();
-        void setCoins(int);
+        void addCoins();
         int getLocation();
         void setLocation();//********************revisar********************************
         int getId();
         int isAlive();
         int chooseAction(Elements); //Mario choose what to do when found an element
-        void foundACoin(double);
+        int foundACoin(double);
         int foundEnemy(Elements,double);
         void foundAHole(double);
         void jump(); // Mario jump if there's a hole, an enemy or a coin

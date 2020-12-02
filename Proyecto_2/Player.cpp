@@ -1,17 +1,11 @@
 #include "Player.h"
 
 
-Player::Player()
-{
-    this->mario = new Mario(my_id);
-    setStrategy();
-}
-
-Player::PLayer(Estrategies strategy)
-{
-    this->mario = new Mario(my_id);
-    this->strategy = strategy;
-
+Player::Player(int id)
+{   
+    this->id = id;
+    this->mario = new Mario(id);
+    randomStrategy();
 }
 
 Player::~PLayer()
@@ -19,7 +13,7 @@ Player::~PLayer()
 
 }
 
-void PLayer::setStrategy()
+void PLayer::randomStrategy()
 {
     int random = rand()%4;
     if(random ==1)
@@ -37,6 +31,10 @@ void PLayer::setStrategy()
     else
     {
         this->strategy = A;
-    }   
-     
+    }       
+}
+
+void PLayer::setStrategy(Estrategies strategy)
+{
+    this->my_strategy = strategy;
 }

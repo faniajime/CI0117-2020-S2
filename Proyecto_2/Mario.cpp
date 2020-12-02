@@ -17,9 +17,9 @@ Mario:: ~Mario()
 
 }
 
-void Mario::setCoins(int coins)
+void Mario::addCoins()
 {
-    this->coins+= coins;
+    this->coins++;
 }
 
 int Mario::getCoins()
@@ -53,11 +53,11 @@ int Mario::isAlive()
  int Mario::chooseAction(Elements element) //Mario choose what to do when found an object
  {
     srand(time(0));
-    int killedEnemy = 0;
+    int action = 0;
     double random = (double) rand()/RAND_MAX;
     if(element== Goomba || element == KoopaTroopa)
     {
-       killedEnemy = foundEnemy(element,random);
+       action = foundEnemy(element,random);
     }
     else if(element== Hole)
     {
@@ -65,13 +65,17 @@ int Mario::isAlive()
     }
     else
     {
-        foundACoin(random);
+        if(foundACoin(random==1)
+        {
+            action = 1;
+        }
     }
-    return killedEnemy;
+    return action;
  }
 
- void Mario::foundACoin(double probability)
+ int Mario::foundACoin(double probability)
  {
+    int catchedCoin = 0;
     if(probability< 0.5)
     {
         dontJump();
@@ -79,12 +83,14 @@ int Mario::isAlive()
     else
     {
         jump();
+        catchedCoin = 1;
     }    
+    return catchedCoin;
  }
 
  int Mario :: foundEnemy(Elements element,double probability)
  {
-    int killedEnemy = 0;
+    int action = 0;
     if(element== Goomba)
     {
         if(probability<= 0.05)
@@ -99,7 +105,7 @@ int Mario::isAlive()
         else
         {
             jumpAndDefeat();
-            killedEnemy = 1;
+            action = 2;
         }        
     }
     else
@@ -115,10 +121,10 @@ int Mario::isAlive()
         else
         {
             jumpAndDefeat();
-            killedEnemy = 1;
+            action = 2;
         }        
     }    
-    return killedEnemy;
+    return action;
  }
      
  void Mario::foundAHole(double probability)

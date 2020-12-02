@@ -20,8 +20,8 @@ enum Elements
 
 class World
 {  
-World(vector<vector<int>> baseWorld){};
-~World(){};
+World(vector<vector<int>> baseWorld);
+~World();
 public:
     
     vector<int> getNext();

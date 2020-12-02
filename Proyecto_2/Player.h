@@ -15,14 +15,16 @@ enum Estrategies
 class Player
 {
     private:
-        Mario mario;
+        int id;        
         Estrategies my_strategy;
-        //World world;************es necesario?*********
+        void randomStrategy();
     public:
-        Player();
-        PLayer(Estrategies)
+        Mario mario(this->id);
+        Player(int);
         ~PLayer();
-        void setEstrategy();
+        void setEstrategy(Estrategies);
+        int getId();
+
     
 };
 #endif
