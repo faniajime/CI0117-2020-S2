@@ -31,8 +31,6 @@ int choose_new_printer()
 int main(int argc, char *argv[])
 {
 
-    //agregar logica de jugador
-
     MPI_Init(&argc, &argv);
     int my_id, num_processes;
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
@@ -52,14 +50,12 @@ int main(int argc, char *argv[])
     int imactive=1;
     int mygoombas=0;
     int myKoopas = 0;
-    int estrategy = 0;
+    int estrategy;
     int sincronization=0;
     int maxCoins;
     int minCoins;
     int my_coins; 
     int amIalive;
-    int es;
-
 
     if(my_id ==0){
         
@@ -72,7 +68,7 @@ int main(int argc, char *argv[])
         }
         cout << "Digite el numero de Mario que quiere observar: ";
         cin>>printer;
-        if(printer<=0 || printer >= num_processes){
+        if(printer<=0 || printer >= num_processes-1){
             cout << "El numero de proceso ingresado no es valido \n" << endl;
             return 1;
         }else{
@@ -82,119 +78,122 @@ int main(int argc, char *argv[])
     MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
     MPI_Bcast(&estrategy, 1, MPI_INT, 0, MPI_COMM_WORLD);
     Player* player = new Player(my_id);
-    if (my_id != 0){
-        if (my_id != printer){
-            estrategy = (rand() % 4) +1;
-        }
+    if(my_id ==printer)
+    {
         player->setEstrategy((Estrategies) estrategy);
     }
 
     while(player->mario->isAlive())
     {
-        if(player->mario->world->getCurrentPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
-            player->mario->world->refreshWorld();
-        }
+        
         //esta logica no la revise
-
         my_coins = player->mario->getCoins();
         MPI_Allgather(&my_coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
-        MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //pensar esta mejor
+        MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //como se quien ataca?***
         amIalive = player->mario->isAlive();
         MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
-        MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
+        MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
+        MPI_Allreduce(&my_coins, &minCoins, 1, MPI_INT , MPI_MIN , MPI_COMM_WORLD);
+        MPI_Allreduce(&my_coins, &maxCoins, 1, MPI_INT , MPI_MAX , MPI_COMM_WORLD);
 
-        int action = 0;
-        vector<int> elements;
-        if(player->mario->world->getCurrentPosition() ==0)//***revisar, esto o getPosition****
+        if(my_id!=0)
         {
-            elements = player->mario->world->getPosition();
-        }
-        else
-        {
-            elements = player->mario->world->getNext();
-        }
-        for( auto& element: elements)
-        {   
-            if(player->mario->isAlive())
+            if(player->mario->world->getCurrentPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
+                player->mario->world->refreshWorld();
+            }
+
+            int action = 0;
+            vector<int> elements;
+            if(player->mario->world->getCurrentPosition() ==0)//***revisar, esto o getPosition****
             {
-                int enemy = 0;
-                action = player->mario->chooseAction((Elements)element);
-                if(action==1)//coin
+                elements = player->mario->world->getPosition();
+            }
+            else
+            {
+                elements = player->mario->world->getNext();
+            }
+            for( auto& element: elements)
+            {   
+                if(player->mario->isAlive())
                 {
-                    player->mario->addCoins();
-                    my_coins=player->mario->getCoins();
-                    MPI_Allgather(&my_coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
-                }
-                else if(action==2)//element is an enemy: goomba or koopatroopa
-                {
-                    if(es==R){
-                        enemy = activePlayers[rand()%num_processes];
-                        if(element==Goomba){
-                            goombas[enemy]++;
-                        }else{
-                            koopatroopas[enemy]++;
-                        }
+                    int enemy = 0;
+                    action = player->mario->chooseAction((Elements)element);
+                    if(action==1)//coin
+                    {
+                        player->mario->addCoins();
+                        my_coins=player->mario->getCoins();
                     }
-                    else if (es == L){
-                        //en caso de no funcionar, quitar Allreduce
-                        MPI_Allreduce(&my_coins, &minCoins, 1, MPI_INT , MPI_MIN , MPI_COMM_WORLD);
-                        for(int i = 0; i<num_processes;i++){
-                            if(coins[i]==minCoins){
-                                enemy = i;
-                            }
+                    else if(action==2)//element is an enemy: goomba or koopatroopa
+                    {
+                        if(estrategy==R){
+                            enemy = activePlayers[rand()%1+(num_processes-1)];// va de 1 a numero de procesos-1
                             if(element==Goomba){
                                 goombas[enemy]++;
-                            }
-                            else{
+                            }else{
                                 koopatroopas[enemy]++;
                             }
                         }
-                    }
-                    else if (es == M){
-                        MPI_Allreduce(&my_coins, &maxCoins, 1, MPI_INT , MPI_MAX , MPI_COMM_WORLD);
-                        for(int i =0; i<num_processes; i++){
-                            if(coins[i]==maxCoins){
-                                enemy = i;                                
+                        else if (estrategy == L)
+                        {
+                            
+                            for(int i = 1; i<num_processes;i++){
+                                if(coins[i]==minCoins){
+                                    enemy = i;
+                                }
+                                if(element==Goomba){
+                                    goombas[enemy]++;
+                                }
+                                else{
+                                    koopatroopas[enemy]++;
+                                }
                             }
-                            if(element==Goomba){
-                                goombas[enemy]++;
-                            } else {
-                                koopatroopas[enemy]++;    
+                        }
+                        else if (estrategy == M)
+                        {                        
+                            for(int i = 1; i<num_processes; i++){
+                                if(coins[i]==maxCoins){
+                                    enemy = i;                                
+                                }
+                                if(element==Goomba){
+                                    goombas[enemy]++;
+                                } else {
+                                    koopatroopas[enemy]++;    
+                                }
+                            }
+                        }else{
+                            for(int i = 1;i<num_processes;++i)
+                            {
+                                if(attacking[i]==1)
+                                {
+                                    enemy = i;
+                                }
+                                if(element==Goomba){
+                                    goombas[enemy]++;
+                                } else {
+                                    koopatroopas[enemy]++;
+                                }
                             }
                         }
                     }else{
-                        for(int i = 0;i<num_processes;++i)
+                        if(player->mario->isAlive())
                         {
-                            if(attacking[i]==1)
-                            {
-                                enemy = i;
-                            }
-                            if(element==Goomba){
-                                goombas[enemy]++;
-                            } else {
-                                koopatroopas[enemy]++;
-                            }
+                            player->mario->world->getNext();
                         }
-                    }
-                }else{
-                    if(player->mario->isAlive())
-                    {
-                        player->mario->world->getNext();
-                    }
-                }    
+                    }    
+                }
             }
-        }
-        if(game_finished(activePlayers, num_processes)){
-            //Compruebo si termino el juego y termino la ejecucion
-            break;
+            if(game_finished(activePlayers, num_processes)){
+                //Compruebo si termino el juego y termino la ejecucion
+                break;
+            }
         }
     }
 
     if (my_id == printer && !finished){
         cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar: ";
         cin>>printer;
-        if(printer<=0 || printer >= num_processes){
+        if(printer<=0 || printer >= num_processes-1){
             cout << "El numero de proceso ingresado no es valido \n" << endl;
             return 1;
         }
@@ -208,7 +207,7 @@ int main(int argc, char *argv[])
         //se encicla hasta que termine el juego 
     }
 
-    while(!finished)
+    
     cout << "El juego ha terminado"<< endl;
     MPI_Finalize();
     return 0;
