@@ -24,9 +24,9 @@ class Mario
         int getCoins();
         void addCoins();
         int getLocation();
-        void setLocation();//********************revisar********************************
         int getId();
         int isAlive();
+        int die();
         int chooseAction(Elements); //Mario choose what to do when found an element
         int foundACoin(double);
         int foundEnemy(Elements,double);

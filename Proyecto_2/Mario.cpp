@@ -8,7 +8,6 @@ Mario::Mario(int id)
 {
     this->coins = 0;
     this->isActive = 1;
-    this->location = 0;
     this->id = id;
     this->world = new World();
 }
@@ -23,6 +22,11 @@ void Mario::addCoins()
     this->coins++;
 }
 
+int Mario::die(){
+    this->isActive == 0;
+    return 1;
+}
+
 int Mario::getCoins()
 {
     return this->coins;
@@ -30,13 +34,9 @@ int Mario::getCoins()
 
 int Mario:: getLocation()
 {
-    return this->location;
+    return this->world->getCurrentPosition();
 }
 
-void Mario:: setLocation()
-{
-    this->location+=1;
-}
 
 int Mario:: getId()
 {

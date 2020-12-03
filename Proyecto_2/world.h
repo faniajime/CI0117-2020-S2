@@ -30,11 +30,13 @@ class World
         vector<int> getNext();
         vector<int> getPosition();
         int getCurrentPosition();
-    private:
-        vector<vector<int>> myWorld;
         int world_size;
-        int current_position;
         void refreshWorld();
         void addElement(int);
+
+    private:
+        vector<vector<int>> myWorld;
+        int current_position;
+
 };
 #endif
