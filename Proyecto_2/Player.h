@@ -12,14 +12,17 @@ enum Estrategies
     A = 4 // attacker
 };
 
+class Mario;
+
 class Player
 {
+    friend class Mario;
     private:
         int id;        
         Estrategies strategy;
-        void randomStrategy();
+        void randomEstrategy();
     public:
-        Mario mario(int);
+        Mario* mario;
         Player(int);
         ~Player();
         void setEstrategy(Estrategies);

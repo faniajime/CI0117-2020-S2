@@ -28,6 +28,7 @@ class World
         ~World();
         vector<int> getNext();
         vector<int> getPosition();
+        int getCurrentPosition();
     private:
         vector<vector<int>> myWorld;
         int world_size;

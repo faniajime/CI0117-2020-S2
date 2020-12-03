@@ -17,7 +17,7 @@ class Mario
         int id;  
 
     public:
-        World world;
+        World* world;
         Mario(int);
         ~Mario();
         int getCoins();

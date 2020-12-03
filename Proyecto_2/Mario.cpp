@@ -10,6 +10,7 @@ Mario::Mario(int id)
     this->isActive = 1;
     this->location = 0;
     this->id = id;
+    this->world = new World();
 }
 
 Mario:: ~Mario()

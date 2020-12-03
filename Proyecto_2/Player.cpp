@@ -4,9 +4,8 @@
 Player::Player(int id)
 {   
     this->id = id;
-    //this->mario = new Mario(id);
-    mario(id);
-    randomStrategy();
+    this->mario = new Mario(id);
+    randomEstrategy();
 }
 
 Player::~Player()
@@ -14,7 +13,7 @@ Player::~Player()
 
 }
 
-void Player::randomStrategy()
+void Player::randomEstrategy()
 {
     int random = rand()%4;
     if(random ==1)
