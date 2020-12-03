@@ -26,6 +26,7 @@ vector<int> World::getPosition(){
 
 void World::refreshWorld( ){
     this->myWorld = baseWorld;
+    this->current_position=0;
 };
 
 void World::addElement( int koopatroopas){

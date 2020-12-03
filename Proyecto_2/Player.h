@@ -19,9 +19,9 @@ class Player
     friend class Mario;
     private:
         int id;        
-        Estrategies strategy;
         void randomEstrategy();
     public:
+        Estrategies strategy;
         Mario* mario;
         Player(int);
         ~Player();

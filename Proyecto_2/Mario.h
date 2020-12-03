@@ -4,6 +4,7 @@
 #include <math.h>
 #include <time.h>
 #include "world.h"
+#include "Mario.h"
 
 using namespace std;
 
