@@ -162,11 +162,16 @@ int main(int argc, char *argv[])
                     {
                         if(estrategy==R){
                             enemy = activePlayers[rand()%1+(num_processes-1)];// va de 1 a numero de procesos-1
-                            
                             if(element==Goomba){
                                 goombas[enemy]++;
+                                if(my_id == printer){
+                                    cout<< ". He enviado un goomba al proceso " << enemy << ".";
+                                }
                             }else{
                                 koopatroopas[enemy]++;
+                                if(my_id == printer){
+                                    cout<< ". He enviado un koopatroopa al proceso " << enemy << ".";
+                                }
                             }
                             if(my_id == printer){
                                 //cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
@@ -174,16 +179,21 @@ int main(int argc, char *argv[])
                         }
                         else if (estrategy == L)
                         {
-                            
                             for(int i = 1; i<num_processes;i++){
                                 if(coins[i]==minCoins){
                                     enemy = i;
                                 }
                                 if(element==Goomba){
                                     goombas[enemy]++;
+                                    if(my_id == printer){
+                                        cout<< ". He enviado un goomba al proceso " << enemy << ".";
+                                    }
                                 }
                                 else{
                                     koopatroopas[enemy]++;
+                                    if(my_id == printer){
+                                        cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                    }
                                 }
                             }
                         }
@@ -195,8 +205,14 @@ int main(int argc, char *argv[])
                                     enemy = i; 
                                     if(element==Goomba){
                                         goombas[enemy]++;
+                                        if(my_id == printer){
+                                            cout<< ". He enviado un Goomba al proceso " << enemy << ".";
+                                        }
                                     } else {
-                                        koopatroopas[enemy]++;    
+                                        koopatroopas[enemy]++;  
+                                        if(my_id == printer){
+                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                        }  
                                     }    
                                     break;                           
                                 }
@@ -211,8 +227,14 @@ int main(int argc, char *argv[])
                                     
                                     if(element==Goomba){
                                         goombas[enemy]++;
+                                        if(my_id == printer){
+                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                        }
                                     } else {
                                         koopatroopas[enemy]++;
+                                        if(my_id == printer){
+                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                        }
                                     }
                                     break;// termina ciclo para que no haga mas de un ataque
                                 }                                
