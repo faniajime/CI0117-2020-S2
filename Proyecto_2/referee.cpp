@@ -116,9 +116,11 @@ int main(int argc, char *argv[])
         MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allreduce(&my_coins, &minCoins, 1, MPI_INT , MPI_MIN , MPI_COMM_WORLD);
         MPI_Allreduce(&my_coins, &maxCoins, 1, MPI_INT , MPI_MAX , MPI_COMM_WORLD);
-        if(my_id == printer){
+        if(my_id == printer){ //checkeo que sigo siendo el impresor
             player->mario->printer = 1;
-        }e
+        }else{
+            player->mario->printer = 0;
+        }
 
         if(my_id!=0)
         {
@@ -143,13 +145,17 @@ int main(int argc, char *argv[])
             {   
                 if(player->mario->isAlive())
                 {
+                    if(my_id == printer){
+                        cout << "Posicion en el mundo: " <<  player->mario->getLocation() << ".";
+                    }
                     action = player->mario->chooseAction((Elements)element);
+                    
                     if(action==1) //significa que mario brinco y agarro la moneda
                     {
                         player->mario->addCoins();
                         my_coins=player->mario->getCoins();
                         if(my_id == printer){
-                            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
+                            //cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
                         }
                     }
                     else if(action==2)//significa que mario brinco y mato a un enemigo
@@ -163,7 +169,7 @@ int main(int argc, char *argv[])
                                 koopatroopas[enemy]++;
                             }
                             if(my_id == printer){
-                            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
+                                //cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
                             }
                         }
                         else if (estrategy == L)
@@ -213,6 +219,9 @@ int main(int argc, char *argv[])
                             }
                         }
                     }
+                    if(my_id == printer){
+                        cout << "Coins: " << my_coins << endl;
+                    }
                 }
             }
         }
@@ -220,6 +229,7 @@ int main(int argc, char *argv[])
         if(my_id==0)
         {
             if(activePlayers[printer] == 0){
+                
                 printer = choose_new_printer(num_processes, activePlayers);
             }
             finished = game_finished(activePlayers, num_processes))               
