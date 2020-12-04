@@ -34,7 +34,7 @@ int Mario::getCoins()
 
 int Mario:: getLocation()
 {
-    return this->world->getCurrentPosition();
+    return this->world->getIndexPosition();
 }
 
 

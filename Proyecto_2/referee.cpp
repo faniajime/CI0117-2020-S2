@@ -22,9 +22,27 @@ bool game_finished(int* active, int size){
     return gameFinished;
 }
 
-int choose_new_printer()
+int choose_new_printer(int num_processes, int* activePlayers)
 {
-    return 0;
+    int printer;
+    cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
+    for(int i =1; i<num_processes,i++)
+    {
+        if(activePlayers[i]==1)
+        {
+            cout<<i<<" "<<endl;
+        }
+    }
+    cin>>printer;
+    if(printer<=0 || printer >= num_processes-1){
+        cout << "El numero de proceso ingresado no es valido \n" << endl;
+        return 1;
+    }
+    if(!activePlayers[printer]){
+        cout << "El mario que escogio no esta vivo, el programa terminara.\n" << endl;
+        return 1; 
+    }
+    return printer;
 }
 
 
@@ -56,6 +74,7 @@ int main(int argc, char *argv[])
     int minCoins;
     int my_coins; 
     int amIalive;
+    int enemy = 0;
 
     if(my_id ==0){
         
@@ -75,21 +94,21 @@ int main(int argc, char *argv[])
             prints[printer] = 1;
         }
     }
-    MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
-    MPI_Bcast(&estrategy, 1, MPI_INT, 0, MPI_COMM_WORLD);
+    MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD); //Le comunico a todos quien imprimira
+    MPI_Bcast(&estrategy, 1, MPI_INT, 0, MPI_COMM_WORLD); //Le comunico a todos la estrategia del impresor
     Player* player = new Player(my_id);
-    if(my_id ==printer)
+    if(my_id ==printer) //si soy el impresor mi estrategia sera la seleccionada por el usuario
     {
         player->setEstrategy((Estrategies) estrategy);
     }
 
-    while(player->mario->isAlive())
+    while(!finished) //mientras que el juego no haya terminado
     {
         
         //esta logica no la revise
         my_coins = player->mario->getCoins();
         MPI_Allgather(&my_coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
-        MPI_Allgather(&attacking, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); //como se quien ataca?***
+        MPI_Allgather(&enemy, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); 
         amIalive = player->mario->isAlive();
         MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
@@ -99,13 +118,13 @@ int main(int argc, char *argv[])
 
         if(my_id!=0)
         {
-            if(player->mario->world->getCurrentPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
+            if(player->mario->world->getIndexPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
                 player->mario->world->refreshWorld();
             }
 
             int action = 0;
             vector<int> elements;
-            if(player->mario->world->getCurrentPosition() ==0)
+            if(player->mario->world->getIndexPosition() ==0)
             {
                 elements = player->mario->world->getPosition();
             }
@@ -113,11 +132,13 @@ int main(int argc, char *argv[])
             {
                 elements = player->mario->world->getNext();
             }
+            if(my_id == printer){
+                cout << "Soy el Mario numero %d y estoy caminando" << endl;
+            }
             for( auto& element: elements)
             {   
                 if(player->mario->isAlive())
                 {
-                    int enemy = 0;
                     action = player->mario->chooseAction((Elements)element);
                     if(action==1)//coin
                     {
@@ -181,47 +202,24 @@ int main(int argc, char *argv[])
                                 }                                
                             }
                         }
-                    }else{
-                        if(player->mario->isAlive())
-                        {
-                            player->mario->world->getNext();
-                        }
-                    }   
-                    attacking[my_id] = enemy;
+                    }
                 }
             }
-            if(my_id==0)
-            {
-                finished = game_finished(activePlayers, num_processes))               
-            }
         }
-    }
-
-    if (my_id == printer && !finished){
-        cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
-        for(int i =1; i<num_processes,i++)
+        MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
+        if(my_id==0)
         {
-            if(activePlayers[i]==1)
-            {
-                cout<<i<<" "<<endl;
+            if(activePlayers[printer] == 0){
+                printer = choose_new_printer(num_processes, activePlayers);
             }
+            finished = game_finished(activePlayers, num_processes))               
         }
-        cin>>printer;
-        if(printer<=0 || printer >= num_processes-1){
-            cout << "El numero de proceso ingresado no es valido \n" << endl;
-            return 1;
-        }
-        if(!activePlayers[printer]){
-            cout << "El mario que escogio no esta vivo \n" << endl;
-            return 1; 
-        }
-        MPI_Bcast(&printer, 1, MPI_INT, my_id, MPI_COMM_WORLD);
+        MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
     }
-
-    
+        
     cout << "El juego ha terminado"<< endl;
     MPI_Finalize();
     return 0;
 }
-
 

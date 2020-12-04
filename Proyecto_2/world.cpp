@@ -37,7 +37,7 @@ void World::addElement( int koopatroopas){
     }
 };
 
-int World::getCurrentPosition()
+int World::getIndexPosition()
 {
     return this->current_position;
 }

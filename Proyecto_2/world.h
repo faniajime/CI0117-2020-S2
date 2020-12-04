@@ -29,7 +29,7 @@ class World
         ~World();
         vector<int> getNext();
         vector<int> getPosition();
-        int getCurrentPosition();
+        int getIndexPosition();
         int world_size;
         void refreshWorld();
         void addElement(int);
