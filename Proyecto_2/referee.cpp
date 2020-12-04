@@ -105,7 +105,7 @@ int main(int argc, char *argv[])
 
             int action = 0;
             vector<int> elements;
-            if(player->mario->world->getCurrentPosition() ==0)//***revisar, esto o getPosition****
+            if(player->mario->world->getCurrentPosition() ==0)
             {
                 elements = player->mario->world->getPosition();
             }
@@ -128,6 +128,7 @@ int main(int argc, char *argv[])
                     {
                         if(estrategy==R){
                             enemy = activePlayers[rand()%1+(num_processes-1)];// va de 1 a numero de procesos-1
+                            
                             if(element==Goomba){
                                 goombas[enemy]++;
                             }else{
@@ -149,30 +150,35 @@ int main(int argc, char *argv[])
                                 }
                             }
                         }
-                        else if (estrategy == M)
+                        else if (estrategy == M)// ataca al que tiene mas monedas
                         {                        
                             for(int i = 1; i<num_processes; i++){
-                                if(coins[i]==maxCoins){
-                                    enemy = i;                                
+                                if(coins[i]==maxCoins && activePlayers[i]==1)
+                                {
+                                    enemy = i; 
+                                    if(element==Goomba){
+                                        goombas[enemy]++;
+                                    } else {
+                                        koopatroopas[enemy]++;    
+                                    }    
+                                    break;                           
                                 }
-                                if(element==Goomba){
-                                    goombas[enemy]++;
-                                } else {
-                                    koopatroopas[enemy]++;    
-                                }
+                                
                             }
-                        }else{
+                        }else{// estrategia: atacar a mi atacante (ley del Talion)
                             for(int i = 1;i<num_processes;++i)
                             {
-                                if(attacking[i]==1)
+                                if(attacking[i]==my_id && activePlayers[i]==1) //si un Mario me ataca y esta vivo, se convierte en mi enemigo 
                                 {
                                     enemy = i;
-                                }
-                                if(element==Goomba){
-                                    goombas[enemy]++;
-                                } else {
-                                    koopatroopas[enemy]++;
-                                }
+                                    
+                                    if(element==Goomba){
+                                        goombas[enemy]++;
+                                    } else {
+                                        koopatroopas[enemy]++;
+                                    }
+                                    break;// termina ciclo para que no haga mas de un ataque
+                                }                                
                             }
                         }
                     }else{
@@ -180,18 +186,26 @@ int main(int argc, char *argv[])
                         {
                             player->mario->world->getNext();
                         }
-                    }    
+                    }   
+                    attacking[my_id] = enemy;
                 }
             }
-            if(game_finished(activePlayers, num_processes)){
-                //Compruebo si termino el juego y termino la ejecucion
-                break;
+            if(my_id==0)
+            {
+                finished = game_finished(activePlayers, num_processes))               
             }
         }
     }
 
     if (my_id == printer && !finished){
-        cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar: ";
+        cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
+        for(int i =1; i<num_processes,i++)
+        {
+            if(activePlayers[i]==1)
+            {
+                cout<<i<<" "<<endl;
+            }
+        }
         cin>>printer;
         if(printer<=0 || printer >= num_processes-1){
             cout << "El numero de proceso ingresado no es valido \n" << endl;
@@ -202,9 +216,6 @@ int main(int argc, char *argv[])
             return 1; 
         }
         MPI_Bcast(&printer, 1, MPI_INT, my_id, MPI_COMM_WORLD);
-    }
-    while(!finished){
-        //se encicla hasta que termine el juego 
     }
 
     
