@@ -26,7 +26,7 @@ int choose_new_printer(int num_processes, int* activePlayers)
 {
     int printer;
     cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
-    for(int i =1; i<num_processes,i++)
+    for(int i =1; i<num_processes;++i)
     {
         if(activePlayers[i]==1)
         {
@@ -79,13 +79,23 @@ int main(int argc, char *argv[])
     if(my_id ==0){
         
         //Ingreso de datos y validaciones
-        cout<< "Digite el tipo de estrategia a usar. 1 para aleatorio, 2 para menos coins, 3 para mas coins y 4 para attacker: "; 
+        cout<<endl;
+        cout<<"--------------------------------------------------------------------------\n";
+        cout<<"|    ***  ***  ***   **  ** ***   **  **  ****  ****    ***  ****   *    |\n";
+        cout<<"|     *    *   *     * ** * *     * ** *  *  *  *  *     *   *  *   *    |\n";
+        cout<<"|     *    *   ***   * *  * **    * *  *  ****  ****     *   *  *   *    |\n";
+        cout<<"|     *    *     *   *    * *     *    *  *  *  *  *     *   *  *        |\n";
+        cout<<"|    ***   *   ***   *    * ***   *    *  *  *  *    *  ***  ****   *    |\n";
+        cout<<"--------------------------------------------------------------------------\n";
+
+        cout<<"Bienvenid@ a Super Mario\n";
+        cout<< "Digite el tipo de estrategia a usar:\n1.Atacar a un Mario aleatoriamente\n2.Atacar al Mario con menos monedas\n3.Atacar al Mario con mas monedas\n4.Atacar a un Mario que me esta atacando\n"; 
         cin>>estrategy;
         if(estrategy>4 || estrategy < 1){
             cout << "El numero de estrategia ingresado no es valido \n" << endl;
             return 1;
         }
-        cout << "Digite el numero de Mario que quiere observar: ";
+        cout << "Digite el numero de Mario que quiere observar:\n ";
         cin>>printer;
         if(printer<=0 || printer >= num_processes-1){
             cout << "El numero de proceso ingresado no es valido \n" << endl;
@@ -133,9 +143,11 @@ int main(int argc, char *argv[])
             if(player->mario->world->getIndexPosition() ==0)
             {
                 elements = player->mario->world->getPosition();
+                cout<<"getPOsition\n";
             }
             else
             {
+                cout<<"getNext"<<endl;
                 elements = player->mario->world->getNext();
             }
             if(my_id == printer){
@@ -254,7 +266,7 @@ int main(int argc, char *argv[])
                 
                 printer = choose_new_printer(num_processes, activePlayers);
             }
-            finished = game_finished(activePlayers, num_processes))               
+            finished = game_finished(activePlayers, num_processes);               
         }
         MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);

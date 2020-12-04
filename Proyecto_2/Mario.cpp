@@ -25,6 +25,7 @@ void Mario::addCoins()
 
 int Mario::die(){
     this->isActive = 0;
+    return isActive;
 }
 
 int Mario::getCoins()
@@ -58,15 +59,15 @@ int Mario::isAlive()
     double random = (double) rand()/RAND_MAX; //se genera una probabilidad al azar
     if(element== Goomba || element == KoopaTroopa)
     {
-       action = foundEnemy(element,random);
+       action = foundEnemy(random,element);
     }
     else if(element== Hole)
     {
-        foundAHole(random);
+        foundAHole(random,element);
     }
     else
     {
-        if(foundACoin(random==1, element))
+        if(foundACoin(random, element))
         {
             action = 1;
         }
@@ -89,7 +90,7 @@ int Mario::isAlive()
     return catchedCoin;
  }
 
- int Mario :: foundEnemy(double probability, Elements element)
+ int Mario :: foundEnemy(double probability,Elements element)
  {
     int action = 0;
     if(element== Goomba)
