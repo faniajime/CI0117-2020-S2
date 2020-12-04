@@ -18,6 +18,7 @@ class Mario
         int id;  
 
     public:
+        int printer;
         World* world;
         Mario(int);
         ~Mario();
@@ -28,12 +29,12 @@ class Mario
         int isAlive();
         int die();
         int chooseAction(Elements); //Mario choose what to do when found an element
-        int foundACoin(double);
+        int foundACoin(Elements, double);
         int foundEnemy(Elements,double);
-        void foundAHole(double);
-        void jump(); // Mario jump if there's a hole, an enemy or a coin
-        void jumpAndDefeat (); // Mario jump and kill a goomba or koopa troopa
-        void dontJump();// Mario doesn't jump and get killed
+        void foundAHole(Elements, double);
+        void jump(Elements); // Mario jump if there's a hole, an enemy or a coin
+        void jumpAndDefeat (Elements); // Mario jump and kill a goomba or koopa troopa
+        void dontJump(Elements);// Mario doesn't jump and get killed
 };
 #endif
 

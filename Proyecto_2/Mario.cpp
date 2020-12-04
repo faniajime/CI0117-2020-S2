@@ -10,6 +10,7 @@ Mario::Mario(int id)
     this->isActive = 1;
     this->id = id;
     this->world = new World();
+    this->printer = 0;
 }
 
 Mario:: ~Mario()
@@ -55,7 +56,7 @@ int Mario::isAlive()
  {
     srand(time(0));
     int action = 0;
-    double random = (double) rand()/RAND_MAX;
+    double random = (double) rand()/RAND_MAX; //se genera una probabilidad al azar
     if(element== Goomba || element == KoopaTroopa)
     {
        action = foundEnemy(element,random);
@@ -96,16 +97,16 @@ int Mario::isAlive()
     {
         if(probability<= 0.05)
         {
-            dontJump();
+            dontJump( element);
             this->isActive = 0;
         }
         else if(probability > 0.05 && probability<= 0.6)
         {
-            jump();
+            jump(element);
         }
         else
         {
-            jumpAndDefeat();
+            jumpAndDefeat(element);
             action = 2;
         }        
     }
@@ -138,17 +139,23 @@ int Mario::isAlive()
         jump();
  }
 
- void Mario::jump() // Mario jump if there's a hole, goomba or koopa troopa
+ void Mario::jump(Elements element) // Mario jump if there's a hole, goomba or koopa troopa
  {
 
  }
 
- void Mario::jumpAndDefeat () // Mario jump and kill a goomba or koopa troopa
+ void Mario::jumpAndDefeat (Elements element) // Mario jump and kill a goomba or koopa troopa
  {
+
 
  }
 
- void Mario:: dontJump()// Mario doesn't jump and get killed
+ void Mario:: dontJump(Elements element )// si mario no brinca
  {
-    this->isActive = 0;
+    if (element == Coin){// si el elemento es una moneda
+        if(my_id == )
+        //no hace nada
+    }else{
+        this->isActive = 0;
+    }
  }

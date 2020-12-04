@@ -99,6 +99,7 @@ int main(int argc, char *argv[])
     Player* player = new Player(my_id);
     if(my_id ==printer) //si soy el impresor mi estrategia sera la seleccionada por el usuario
     {
+        player->mario->printer = 1;
         player->setEstrategy((Estrategies) estrategy);
     }
 
@@ -115,6 +116,9 @@ int main(int argc, char *argv[])
         MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allreduce(&my_coins, &minCoins, 1, MPI_INT , MPI_MIN , MPI_COMM_WORLD);
         MPI_Allreduce(&my_coins, &maxCoins, 1, MPI_INT , MPI_MAX , MPI_COMM_WORLD);
+        if(my_id == printer){
+            player->mario->printer = 1;
+        }e
 
         if(my_id!=0)
         {
@@ -133,19 +137,22 @@ int main(int argc, char *argv[])
                 elements = player->mario->world->getNext();
             }
             if(my_id == printer){
-                cout << "Soy el Mario numero %d y estoy caminando" << endl;
+                cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario esta caminando. Monedas: " << my_coins <<endl;
             }
             for( auto& element: elements)
             {   
                 if(player->mario->isAlive())
                 {
                     action = player->mario->chooseAction((Elements)element);
-                    if(action==1)//coin
+                    if(action==1) //significa que mario brinco y agarro la moneda
                     {
                         player->mario->addCoins();
                         my_coins=player->mario->getCoins();
+                        if(my_id == printer){
+                            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
+                        }
                     }
-                    else if(action==2)//element is an enemy: goomba or koopatroopa
+                    else if(action==2)//significa que mario brinco y mato a un enemigo
                     {
                         if(estrategy==R){
                             enemy = activePlayers[rand()%1+(num_processes-1)];// va de 1 a numero de procesos-1
@@ -154,6 +161,9 @@ int main(int argc, char *argv[])
                                 goombas[enemy]++;
                             }else{
                                 koopatroopas[enemy]++;
+                            }
+                            if(my_id == printer){
+                            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
                             }
                         }
                         else if (estrategy == L)
