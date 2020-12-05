@@ -1,13 +1,13 @@
 # ¡Bienvenidos a nuestro proyecto! Este es un simulador de Super Mario Battle Royale.
 ### Integrantes: Karen Zamora y Fabiola Jiménez
 
-### ___________________________________________________________________________________________________
-[mario](assets/sm.jpg)
+### _______________________________________________________________________________
+![mario](assets/sm.jpg)
 
 ### Detalles de la solución
 En este emocionante juego usted podrá seguir el recorrido de un Mario mientras enfrenta peligrosos obstáculos en el clásico mundo 1-1, como little Goombas, Koopa Troopas y hoyos, y además debe de cuidarse de otros Marios que lo quieran sabotear. Todo esto mientras busca aumentar su fortuna y llegar a la gloria como el último Mario en pie.
 
-###Manual de usuario
+### Manual de usuario
 
 - Para iniciar es necesario que instale en su ambiente linux open-mpi o mpich para poder hacer uso de mpi
 - Para compilar el código fuente deberá clonar el repositorio, ubicarse en la carpeta que contiene los archivos y en la consola escribir make, el Makefile incluido compilará los archivos.
@@ -30,7 +30,7 @@ La posición del mundo en la que se encuentra Mario, su número, la cantidad de 
 ### Detalles de la solución
 
 Se muestra un diagrama de clases para representar la relación entre las clases.
-[Diagram](assets/Diagram.jpg)
+![Diagram](assets/Diagram.jpg)
 
 ### Referee
 Es el encargado de la lógica principal del juego, crea a cada uno de los jugadores y verifica las acciones a realizar producto de la interación de Mario con cada uno de los elementos del mundo y con base en esto calcula de acerdo a la estrategia elegida a quién atacar. Además, debe verificar los jugadores que hayan muerto e indicar cuándo ha finalido el juego.
