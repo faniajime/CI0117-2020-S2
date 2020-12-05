@@ -9,7 +9,7 @@
 #include <stdio.h>      /* printf, scanf, puts, NULL */
 #include <stdlib.h>     /* srand, rand */
 #include <time.h>
-
+#include <cstring>
 using namespace std;
 
 
@@ -29,6 +29,7 @@ int main(int argc, char *argv[])
 
     //Se inicializan las variables necesarias
     int printer, finished, alive,my_coins, mygoombas, myKoopas, estrategy = 0;
+    int recgoombas, reckoopas = 0;
     int maxCoins =  -1;
     int minCoins = 10000;
     int amIalive = 1; //ESTOY VIVO?????? 
@@ -85,12 +86,21 @@ int main(int argc, char *argv[])
         MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
+
         
         //Se agregan al mundo todos los goombas y koopas que le enviaron
-        player->mario->world->addElement(mygoombas);
-        player->mario->world->addElement(myKoopas);
-        mygoombas = 0;
-        myKoopas = 0;
+        if(player != 0){
+            for(int i =0 ; i < num_processes;i++){
+                if(attacking[i] == my_id){
+                    recgoombas += goombas[i];
+                    reckoopas += koopatroopas[i];
+                } 
+            }
+            player->mario->world->addElement(recgoombas, 2);
+            player->mario->world->addElement(reckoopas, 1);
+            mygoombas, myKoopas, reckoopas, recgoombas=0;
+        }
+    
         
         //El hilo cero comprueba que el juego no haya terminado
         if(my_id == 0){ 
@@ -180,12 +190,12 @@ int main(int argc, char *argv[])
                                 if(activePlayers[enemy]){
                                     foundEnemy = 1;
                                     if(element==Goomba){
-                                        goombas[enemy]++;
+                                        mygoombas++;
                                         if(my_id == printer){
                                             cout<< "He enviado un goomba al proceso " << enemy << ". ";
                                         }
                                     }else{
-                                        koopatroopas[enemy]++;
+                                        myKoopas++;
                                         if(my_id == printer){
                                             cout<< "He enviado un koopatroopa al proceso " << enemy << ". ";
                                         }
@@ -207,13 +217,13 @@ int main(int argc, char *argv[])
                             if(minimum){
                                 enemy = minimum;
                                 if(element==Goomba){
-                                    goombas[enemy]++;
+                                    mygoombas++;
                                     if(my_id == printer){
                                         cout<< " He enviado un goomba al proceso " << enemy << ". ";
                                     }
                                 }
                                 else{
-                                    koopatroopas[enemy]++;
+                                    myKoopas++;
                                     if(my_id == printer){
                                         cout<< " He enviado un Koopatroopa al proceso " << enemy << ".  ";
                                     }
@@ -233,12 +243,12 @@ int main(int argc, char *argv[])
                             {
                                 enemy = maximum; 
                                 if(element==Goomba){
-                                    goombas[enemy]++;
+                                    mygoombas++;
                                     if(my_id == printer){
                                         cout<< "He enviado un Goomba al proceso " << enemy << ". ";
                                     }
                                 } else {
-                                    koopatroopas[enemy]++;  
+                                    myKoopas++;  
                                     if(my_id == printer){
                                         cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
                                     }  
@@ -255,12 +265,12 @@ int main(int argc, char *argv[])
                                     enemy = i;
                                     foundattacker = 1;
                                     if(element==Goomba){
-                                        goombas[enemy]++;
+                                        mygoombas++;
                                         if(my_id == printer){
                                             cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
                                         }
                                     } else {
-                                        koopatroopas[enemy]++;
+                                        myKoopas++;
                                         if(my_id == printer){
                                             cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
                                         }
@@ -275,12 +285,12 @@ int main(int argc, char *argv[])
                                     if(activePlayers[enemy]){
                                         foundenemy =1;
                                         if(element==Goomba){
-                                            goombas[enemy]++;
+                                            mygoombas++;
                                             if(my_id == printer){
                                                 cout<< "He enviado un goomba al proceso " << enemy << ". ";
                                             }
                                         }else{
-                                            koopatroopas[enemy]++;
+                                            myKoopas++;
                                             if(my_id == printer){
                                                 cout<< "He enviado un koopatroopa al proceso " << enemy << ". ";
                                             }
@@ -320,7 +330,7 @@ int main(int argc, char *argv[])
     //El hilo 0 comunica a los demas que ya termino el juego e imprime game over
     MPI_Bcast( &finished , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
     if(my_id == 0){
-        cout<<"-------------------fbcas-----------------------------------------\n";
+        cout<<"------------------------------------------------------------\n";
         cout<<"|    **** ***  ** **  ****   **** *    *  ****  ****       |\n";
         cout<<"|    *    * *  * * *  *      *  *  *  *   *     *  *       |\n";
         cout<<"|    * ** ***  *   *  ***    *  *  *  *   ***   ****       |\n";
@@ -332,5 +342,3 @@ int main(int argc, char *argv[])
     MPI_Finalize();
     return 0;
 }
-
-]
