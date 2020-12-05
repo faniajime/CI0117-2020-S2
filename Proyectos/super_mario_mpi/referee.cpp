@@ -109,7 +109,6 @@ int main(int argc, char *argv[])
             }
         }
         MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(&alive, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
         //En caso de que el impresor se haya muerto, se selecciona uno nuevo
         if(my_id==0 && !finished){
@@ -321,7 +320,7 @@ int main(int argc, char *argv[])
     //El hilo 0 comunica a los demas que ya termino el juego e imprime game over
     MPI_Bcast( &finished , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
     if(my_id == 0){
-        cout<<"------------------------------------------------------------\n";
+        cout<<"-------------------fbcas-----------------------------------------\n";
         cout<<"|    **** ***  ** **  ****   **** *    *  ****  ****       |\n";
         cout<<"|    *    * *  * * *  *      *  *  *  *   *     *  *       |\n";
         cout<<"|    * ** ***  *   *  ***    *  *  *  *   ***   ****       |\n";
@@ -334,3 +333,4 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+]
