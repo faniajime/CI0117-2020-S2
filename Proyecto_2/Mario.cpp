@@ -54,7 +54,6 @@ int Mario::isAlive()
 
 int Mario::chooseAction(Elements element) //Mario choose what to do when found an object
 {
-    srand(time(0));
     int action = 0;
     double random = (double) rand()/RAND_MAX; //se genera una probabilidad al azar
     if(element== Goomba || element == KoopaTroopa)

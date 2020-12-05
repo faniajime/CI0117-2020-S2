@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 
     //Se inicializan los buffers
     int coins[num_processes], attacking[num_processes], activePlayers[num_processes], goombas[num_processes], koopatroopas[num_processes], prints[num_processes]  = {0};
-    
+
     //Se inicializan las variables necesarias
     int printer, finished, alive,my_coins, mygoombas, myKoopas, estrategy = 0;
     int maxCoins =  -1;
@@ -121,9 +121,10 @@ int main(int argc, char *argv[])
 
                     if(activePlayers[i])
                     {
-                        cout<<i<<", "<<endl;
+                        cout<<i<<", ";
                     }
                 }
+                cout <<endl;
                 if(!finished){
                     cin>>printer;
                 }
@@ -314,7 +315,9 @@ int main(int argc, char *argv[])
         player->mario->world->current_position++;
         sleep(1);
     }
-
+    if(player->mario->isAlive() && !(my_id == 0)){
+        cout << "El juego ha terminado. El ganador es el proceso: " << my_id <<endl;
+    }
     //El hilo 0 comunica a los demas que ya termino el juego e imprime game over
     MPI_Bcast( &finished , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
     if(my_id == 0){
