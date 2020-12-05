@@ -30,7 +30,7 @@ La posición del mundo en la que se encuentra Mario, su número, la cantidad de 
 ### Detalles de la solución
 
 Se muestra un diagrama de clases para representar la relación entre las clases.
-![Diagram](assets/Diagram.jpg)
+![Diagram](assets/Diagram.jpeg)
 
 ### Referee
 Es el encargado de la lógica principal del juego, crea a cada uno de los jugadores y verifica las acciones a realizar producto de la interación de Mario con cada uno de los elementos del mundo y con base en esto calcula de acerdo a la estrategia elegida a quién atacar. Además, debe verificar los jugadores que hayan muerto e indicar cuándo ha finalido el juego.
