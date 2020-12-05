@@ -15,7 +15,7 @@ Player::~Player()
 
 void Player::randomEstrategy()
 {
-    int random = rand()%4;
+    int random = rand()%5+1;
     if(random ==1)
     {
         this->strategy = R;

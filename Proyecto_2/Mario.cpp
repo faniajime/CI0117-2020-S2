@@ -47,13 +47,13 @@ int Mario:: getId()
 int Mario::isAlive()
 {
     int alive = 0;
-    if(this->isActive ==1)
+    if(this->isActive)
         alive = 1;
     return alive;
 }
 
- int Mario::chooseAction(Elements element) //Mario choose what to do when found an object
- {
+int Mario::chooseAction(Elements element) //Mario choose what to do when found an object
+{
     srand(time(0));
     int action = 0;
     double random = (double) rand()/RAND_MAX; //se genera una probabilidad al azar
@@ -73,10 +73,10 @@ int Mario::isAlive()
         }
     }
     return action;
- }
+}
 
- int Mario::foundACoin(double probability, Elements element)
- {
+int Mario::foundACoin(double probability, Elements element)
+{
     int catchedCoin = 0;
     if(probability< 0.5)
     {
@@ -88,10 +88,10 @@ int Mario::isAlive()
         catchedCoin = 1;
     }    
     return catchedCoin;
- }
+}
 
- int Mario :: foundEnemy(double probability,Elements element)
- {
+int Mario :: foundEnemy(double probability,Elements element)
+{
     int action = 0;
     if(element== Goomba)
     {
@@ -127,72 +127,74 @@ int Mario::isAlive()
         }        
     }    
     return action;
- }
+}
      
- void Mario::foundAHole(double probability, Elements element)
- {
+void Mario::foundAHole(double probability, Elements element)
+{
     if(probability<=0.5)
     {
         dontJump(element);
     }
-    else 
+    else{
         jump(element);
- }
+    }
+        
+}
 
  void Mario::jump(Elements element) // Mario jump if there's a hole, goomba or koopa troopa
- {
+{
     if (element == Coin){// si el elemento es una moneda
         if(this->id == this->printer ){
-            cout << "Mario ha brincado y ha atrapado la moneda";
+            cout << " Mario ha brincado y ha atrapado la moneda. ";
         }
     }else if(element == Goomba){
         if(this->id == this->printer ){
-            cout << "Mario ha brincado, ha logrado evadir a un Goomba";
+            cout << " Mario ha brincado, ha logrado evadir a un Goomba. ";
         }
     }else if(element == KoopaTroopa){
         if(this->id == this->printer ){
-            cout << "Mario ha brincado, ha logrado evadir a un Koopa Troopa";
+            cout << " Mario ha brincado, ha logrado evadir a un Koopa Troopa. ";
         }
     }else{
         if(this->id == this->printer ){
-            cout << "Mario ha brincado y ha evitado caer en un hueco";
+            cout << " Mario ha brincado y ha evitado caer en un hueco. ";
         }
     }
- }
+}
 
- void Mario::jumpAndDefeat (Elements element) // Mario jump and kill a goomba or koopa troopa
- {
+void Mario::jumpAndDefeat (Elements element) // Mario jump and kill a goomba or koopa troopa
+{
     if(element == Goomba){
         if(this->id == this->printer ){
-            cout << "Mario ha brincado y matado a un Goobma. ";
+            cout << " Mario ha brincado y matado a un Goobma. ";
         }
     }else{
         if(this->id == this->printer ){
-            cout << "Mario ha brincado y matado a un Koopa Troopa. ";
+            cout << " Mario ha brincado y matado a un Koopa Troopa. ";
         }
     }
- }
+}
 
- void Mario:: dontJump(Elements element )// si mario no brinca
- {
+void Mario:: dontJump(Elements element )// si mario no brinca
+{
     if (element == Coin){// si el elemento es una moneda
         if(this->id == this->printer ){
-            cout << "Mario no ha brincado y no ha atrapado la moneda";
+            cout << " Mario no ha brincado y no ha atrapado la moneda. ";
         }
     }else if(element == Goomba){
         if(this->id == this->printer ){
-            cout << "Mario no ha brincado, ha sido matado por un goomba";
+            cout << " Mario no ha brincado, ha sido matado por un goomba. ";
         }
         this->isActive = 0;
     }else if(element == KoopaTroopa){
         if(this->id == this->printer ){
-            cout << "Mario no ha brincado, ha sido matado por un Koopa Troopa";
+            cout << " Mario no ha brincado, ha sido matado por un Koopa Troopa. ";
         }
         this->isActive = 0;
     }else{
         if(this->id == this->printer ){
-            cout << "Mario no ha brincado, ha caido en un hueco";
+            cout << " Mario no ha brincado, ha caido en un hueco. ";
         }
         this->isActive = 0;
     }
- }
+}

@@ -16,16 +16,12 @@ World::~World()
 };
 
 vector<int> World::getNext(){
-    this->current_position+=1;
     return this->myWorld[this->current_position];
 };
 
-vector<int> World::getPosition(){
-    return this->myWorld[this->current_position];
-};
 
 void World::refreshWorld( ){
-    this->myWorld = baseWorld;
+    this->myWorld.assign(baseWorld.begin(), baseWorld.end());
     this->current_position=0;
 };
 

@@ -5,45 +5,13 @@
 #include "Player.h"
 #include "world.h"
 #include <vector>
+#include <unistd.h>
+#include <stdio.h>      /* printf, scanf, puts, NULL */
+#include <stdlib.h>     /* srand, rand */
+#include <time.h>
 
+using namespace std;
 
-
-bool game_finished(int* active, int size){
-    int alive = 0;
-    bool gameFinished = false;
-    for(int i = 1; i<size; i++){
-        if(active[i]){
-            alive+=1;
-        }
-    }
-    if(alive<=1){
-        gameFinished = true;
-    }
-    return gameFinished;
-}
-
-int choose_new_printer(int num_processes, int* activePlayers)
-{
-    int printer;
-    cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
-    for(int i =1; i<num_processes;++i)
-    {
-        if(activePlayers[i]==1)
-        {
-            cout<<i<<" "<<endl;
-        }
-    }
-    cin>>printer;
-    if(printer<=0 || printer >= num_processes-1){
-        cout << "El numero de proceso ingresado no es valido \n" << endl;
-        return 1;
-    }
-    if(!activePlayers[printer]){
-        cout << "El mario que escogio no esta vivo, el programa terminara.\n" << endl;
-        return 1; 
-    }
-    return printer;
-}
 
 
 int main(int argc, char *argv[])
@@ -54,27 +22,27 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     MPI_Status status;
-
-    int coins[num_processes];
-    int attacking[num_processes];
-    int activePlayers[num_processes];
-    int goombas[num_processes]; 
-    int koopatroopas[num_processes];
+    srand((my_id));
+    int coins[num_processes]={0};
+    int attacking[num_processes]={0};
+    int activePlayers[num_processes]={0};
+    int goombas[num_processes]={0}; 
+    int koopatroopas[num_processes]={0};
     int prints[num_processes]  = {0};
-    int printer;
+    int printer = 0;
     int finished = 0;
+    int alive = 0;
     int mycoins= 0;
     int iattacking=0;
-    int imactive=1;
     int mygoombas=0;
     int myKoopas = 0;
-    int estrategy;
+    int estrategy = 0;
     int sincronization=0;
-    int maxCoins;
-    int minCoins;
+    int maxCoins =  -1;
+    int minCoins = 10000;
     int my_coins; 
-    int amIalive;
-    int enemy = 0;
+    int amIalive = 1;
+    int enemy = rand()%num_processes+1;
 
     if(my_id ==0){
         
@@ -97,7 +65,7 @@ int main(int argc, char *argv[])
         }
         cout << "Digite el numero de Mario que quiere observar:\n ";
         cin>>printer;
-        if(printer<=0 || printer >= num_processes-1){
+        if(printer<=0 || printer > num_processes){
             cout << "El numero de proceso ingresado no es valido \n" << endl;
             return 1;
         }else{
@@ -109,10 +77,8 @@ int main(int argc, char *argv[])
     Player* player = new Player(my_id);
     if(my_id ==printer) //si soy el impresor mi estrategia sera la seleccionada por el usuario
     {
-        player->mario->printer = 1;
         player->setEstrategy((Estrategies) estrategy);
     }
-
     while(!finished) //mientras que el juego no haya terminado
     {
         
@@ -124,155 +90,234 @@ int main(int argc, char *argv[])
         MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
-        MPI_Allreduce(&my_coins, &minCoins, 1, MPI_INT , MPI_MIN , MPI_COMM_WORLD);
-        MPI_Allreduce(&my_coins, &maxCoins, 1, MPI_INT , MPI_MAX , MPI_COMM_WORLD);
-        if(my_id == printer){ //checkeo que sigo siendo el impresor
-            player->mario->printer = 1;
-        }else{
-            player->mario->printer = 0;
+        
+        player->mario->world->addElement(mygoombas);
+        player->mario->world->addElement(myKoopas);
+        mygoombas = 0;
+        myKoopas = 0;
+        
+        
+        if(my_id == 0){
+            alive = 0;
+            for(int i = 1; i<num_processes; i++){
+                if(activePlayers[i]){
+                    alive+=1;
+                }
+            }
+            if(alive<2){
+                finished = 1;
+                amIalive = 0;
+            }
+            else{
+                finished = 0;
+            }
+        }
+        MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        MPI_Bcast(&alive, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+        if(my_id==0 && !finished){
+            if(!activePlayers[printer])
+            {
+                cout << "Oh no, su mario murio, escoja un nuevo jugador al que observar, estas son sus opciones:";
+                for(int i =1; i<num_processes;++i)
+                {
+
+                    if(activePlayers[i])
+                    {
+                        cout<<i<<", "<<endl;
+                    }
+                }
+                if(!finished){
+                    cin>>printer;
+                }
+                
+                if(printer<=0 || printer >= num_processes-1){
+                    cout << "El numero de proceso ingresado no es valido \n" << endl;
+                    return 1;
+                }
+                if(!activePlayers[printer]){
+                    cout << "El mario que escogio no esta vivo, el programa terminara.\n" << endl;
+                    return 1; 
+                }
+            }
+        }             
+        MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        player->mario->printer = printer;
+        if(my_id == printer){
+            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << ".";
         }
 
-        if(my_id!=0)
+        if(my_id != 0 && !finished)
         {
             if(player->mario->world->getIndexPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
                 player->mario->world->refreshWorld();
             }
-
+            
             int action = 0;
             vector<int> elements;
-            if(player->mario->world->getIndexPosition() ==0)
-            {
-                elements = player->mario->world->getPosition();
-                cout<<"getPOsition\n";
-            }
-            else
-            {
-                cout<<"getNext"<<endl;
-                elements = player->mario->world->getNext();
-            }
-            if(my_id == printer){
-                cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario esta caminando. Monedas: " << my_coins <<endl;
-            }
-            for( auto& element: elements)
+            elements = player->mario->world->getNext();
+            for(auto& element: elements)
             {   
-                if(player->mario->isAlive())
+                if(amIalive)
                 {
-                    if(my_id == printer){
-                        cout << "Posicion en el mundo: " <<  player->mario->getLocation() << ".";
-                    }
-                    action = player->mario->chooseAction((Elements)element);
+                    
+                    action = player->mario->chooseAction((Elements) element);
                     
                     if(action==1) //significa que mario brinco y agarro la moneda
                     {
                         player->mario->addCoins();
                         my_coins=player->mario->getCoins();
-                        if(my_id == printer){
-                            //cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
-                        }
                     }
                     else if(action==2)//significa que mario brinco y mato a un enemigo
                     {
                         if(estrategy==R){
-                            enemy = activePlayers[rand()%1+(num_processes-1)];// va de 1 a numero de procesos-1
-                            if(element==Goomba){
-                                goombas[enemy]++;
-                                if(my_id == printer){
-                                    cout<< ". He enviado un goomba al proceso " << enemy << ".";
-                                }
-                            }else{
-                                koopatroopas[enemy]++;
-                                if(my_id == printer){
-                                    cout<< ". He enviado un koopatroopa al proceso " << enemy << ".";
+                            int foundEnemy = 0;
+                            while(!foundEnemy){
+                                enemy = rand()%num_processes+1;// va de 1 a numero de procesos-1
+                                if(activePlayers[enemy]){
+                                    foundEnemy = 1;
+                                    if(element==Goomba){
+                                        goombas[enemy]++;
+                                        if(my_id == printer){
+                                            cout<< "He enviado un goomba al proceso " << enemy << ". ";
+                                        }
+                                    }else{
+                                        koopatroopas[enemy]++;
+                                        if(my_id == printer){
+                                            cout<< "He enviado un koopatroopa al proceso " << enemy << ". ";
+                                        }
+                                    }
                                 }
                             }
-                            if(my_id == printer){
-                                //cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario ha brincado y ha agarrado una moneda! Monedas: " << my_coins << endl;
-                            }
+                            
                         }
                         else if (estrategy == L)
                         {
+                            int minimum = 0;
+                            minCoins = 1000000;
                             for(int i = 1; i<num_processes;i++){
-                                if(coins[i]==minCoins){
-                                    enemy = i;
+                                if (coins[i]<minCoins && activePlayers[i] && i!=my_id){
+                                    minCoins = coins[i];
+                                    minimum = i;
                                 }
+                            }
+                            if(minimum){
+                                enemy = minimum;
                                 if(element==Goomba){
                                     goombas[enemy]++;
                                     if(my_id == printer){
-                                        cout<< ". He enviado un goomba al proceso " << enemy << ".";
+                                        cout<< " He enviado un goomba al proceso " << enemy << ". ";
                                     }
                                 }
                                 else{
                                     koopatroopas[enemy]++;
                                     if(my_id == printer){
-                                        cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                        cout<< " He enviado un Koopatroopa al proceso " << enemy << ".  ";
                                     }
                                 }
                             }
                         }
                         else if (estrategy == M)// ataca al que tiene mas monedas
                         {                        
-                            for(int i = 1; i<num_processes; i++){
-                                if(coins[i]==maxCoins && activePlayers[i]==1)
-                                {
-                                    enemy = i; 
-                                    if(element==Goomba){
-                                        goombas[enemy]++;
-                                        if(my_id == printer){
-                                            cout<< ". He enviado un Goomba al proceso " << enemy << ".";
-                                        }
-                                    } else {
-                                        koopatroopas[enemy]++;  
-                                        if(my_id == printer){
-                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
-                                        }  
-                                    }    
-                                    break;                           
-                                }
+                            maxCoins = -1;
+                            int maximum =0;
+                            for(int i = num_processes-1; i>1; i--){ //se lo manda al de mayor coins empezando a buscar por el ultimo
+                                if (coins[i]> maxCoins && activePlayers[i] && i!=my_id){
+                                    maxCoins = coins[i];
+                                    maximum = i;
+                                }                            }
+                            if(maximum)
+                            {
+                                enemy = maximum; 
+                                if(element==Goomba){
+                                    goombas[enemy]++;
+                                    if(my_id == printer){
+                                        cout<< "He enviado un Goomba al proceso " << enemy << ". ";
+                                    }
+                                } else {
+                                    koopatroopas[enemy]++;  
+                                    if(my_id == printer){
+                                        cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
+                                    }  
+                                }           
                                 
                             }
                         }else{// estrategia: atacar a mi atacante (ley del Talion)
+                            int foundattacker = 0;
+                            int foundenemy =0;
                             for(int i = 1;i<num_processes;++i)
                             {
                                 if(attacking[i]==my_id && activePlayers[i]==1) //si un Mario me ataca y esta vivo, se convierte en mi enemigo 
                                 {
                                     enemy = i;
-                                    
+                                    foundattacker = 1;
                                     if(element==Goomba){
                                         goombas[enemy]++;
                                         if(my_id == printer){
-                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                            cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
                                         }
                                     } else {
                                         koopatroopas[enemy]++;
                                         if(my_id == printer){
-                                            cout<< ". He enviado un Koopatroopa al proceso " << enemy << ".";
+                                            cout<< " He enviado un Koopatroopa al proceso " << enemy << ".";
                                         }
                                     }
                                     break;// termina ciclo para que no haga mas de un ataque
                                 }                                
                             }
+                            if(!foundattacker){
+                                while(!foundenemy){
+                                    enemy = rand()%num_processes+1;// va de 1 a numero de procesos-1
+                                    if(activePlayers[enemy]){
+                                        foundenemy =1;
+                                        if(element==Goomba){
+                                            goombas[enemy]++;
+                                            if(my_id == printer){
+                                                cout<< "He enviado un goomba al proceso " << enemy << ". ";
+                                            }
+                                        }else{
+                                            koopatroopas[enemy]++;
+                                            if(my_id == printer){
+                                                cout<< "He enviado un koopatroopa al proceso " << enemy << ". ";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
-                    if(my_id == printer){
-                        cout << "Coins: " << my_coins << endl;
-                    }
+                
                 }
             }
         }
-        MPI_Allgather(&amIalive, 1 , MPI_INT , activePlayers , 1 , MPI_INT , MPI_COMM_WORLD);
-        if(my_id==0)
-        {
-            if(activePlayers[printer] == 0){
-                
-                printer = choose_new_printer(num_processes, activePlayers);
+        MPI_Gather( &amIalive , 1 , MPI_INT , activePlayers , 1 , MPI_INT , printer , MPI_COMM_WORLD);
+        if(my_id == printer){
+            alive = 0;
+            int beingAttacked = 0;
+            for(int i =1; i< num_processes; i++){
+                if(attacking[i] == my_id){
+                    beingAttacked = i;
+                }                 
+                if (activePlayers[i] == 1){
+                    alive++;
+                }
             }
-            finished = game_finished(activePlayers, num_processes);               
+            cout << "Monedas: " << my_coins << "| Atacando a: " << enemy << "| Siendo atacado por: "<< beingAttacked << "| Estrategia: " << estrategy << "| Total jugando: " << alive << "."<< endl;
         }
-        MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
-        MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
+        player->mario->world->current_position++;
+        sleep(1);
     }
-        
-    cout << "El juego ha terminado"<< endl;
+    MPI_Bcast( &finished , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
+    if(my_id == 0){
+        cout<<"------------------------------------------------------------\n";
+        cout<<"|    **** ***  ** **  ****   **** *    *  ****  ****       |\n";
+        cout<<"|    *    * *  * * *  *      *  *  *  *   *     *  *       |\n";
+        cout<<"|    * ** ***  *   *  ***    *  *  *  *   ***   ****       |\n";
+        cout<<"|    *  * * *  *   *  *      *  *  *  *   *     *   *      |\n";
+        cout<<"|    **** * *  *   *  ****   ****    *    ****  *    *     |\n";
+        cout<<"-----------------------------------------------------------\n";
+
+    }
     MPI_Finalize();
     return 0;
 }
