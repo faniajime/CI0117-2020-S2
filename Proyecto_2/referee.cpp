@@ -22,7 +22,7 @@ int main(int argc, char *argv[])
     MPI_Comm_size(MPI_COMM_WORLD, &num_processes);
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     MPI_Status status;
-    srand((my_id));
+    srand((unsigned) time(NULL)*my_id*1000);
     int coins[num_processes]={0};
     int attacking[num_processes]={0};
     int activePlayers[num_processes]={0};
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
         MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
         player->mario->printer = printer;
         if(my_id == printer){
-            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << ".";
+            cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario # " << my_id<< ". ";
         }
 
         if(my_id != 0 && !finished)
@@ -221,7 +221,7 @@ int main(int argc, char *argv[])
                         {                        
                             maxCoins = -1;
                             int maximum =0;
-                            for(int i = num_processes-1; i>1; i--){ //se lo manda al de mayor coins empezando a buscar por el ultimo
+                            for(int i = 0; i>num_processes; i++){ //se lo manda al de mayor coins empezando a buscar por el ultimo
                                 if (coins[i]> maxCoins && activePlayers[i] && i!=my_id){
                                     maxCoins = coins[i];
                                     maximum = i;
