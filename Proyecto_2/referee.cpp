@@ -23,26 +23,16 @@ int main(int argc, char *argv[])
     MPI_Comm_rank(MPI_COMM_WORLD, &my_id);
     MPI_Status status;
     srand((unsigned) time(NULL)*my_id*1000);
-    int coins[num_processes]={0};
-    int attacking[num_processes]={0};
-    int activePlayers[num_processes]={0};
-    int goombas[num_processes]={0}; 
-    int koopatroopas[num_processes]={0};
-    int prints[num_processes]  = {0};
-    int printer = 0;
-    int finished = 0;
-    int alive = 0;
-    int mycoins= 0;
-    int iattacking=0;
-    int mygoombas=0;
-    int myKoopas = 0;
-    int estrategy = 0;
-    int sincronization=0;
+
+    //Se inicializan los buffers
+    int coins[num_processes], attacking[num_processes], activePlayers[num_processes], goombas[num_processes], koopatroopas[num_processes], prints[num_processes]  = {0};
+    
+    //Se inicializan las variables necesarias
+    int printer, finished, alive,my_coins, mygoombas, myKoopas, estrategy = 0;
     int maxCoins =  -1;
     int minCoins = 10000;
-    int my_coins; 
-    int amIalive = 1;
-    int enemy = rand()%num_processes+1;
+    int amIalive = 1; //ESTOY VIVO?????? 
+    int enemy = rand()%num_processes+1; //Se inicializa en random y luego se cambia
 
     if(my_id ==0){
         
@@ -72,17 +62,22 @@ int main(int argc, char *argv[])
             prints[printer] = 1;
         }
     }
+    //Comunicamos a todos quien imprime y su estrategia
     MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD); //Le comunico a todos quien imprimira
     MPI_Bcast(&estrategy, 1, MPI_INT, 0, MPI_COMM_WORLD); //Le comunico a todos la estrategia del impresor
+    
+    //Creamos un jugador por proceso
     Player* player = new Player(my_id);
     if(my_id ==printer) //si soy el impresor mi estrategia sera la seleccionada por el usuario
     {
         player->setEstrategy((Estrategies) estrategy);
     }
-    while(!finished) //mientras que el juego no haya terminado
+
+
+    while(!finished) //Este ciclo se ejecuta mientras que el juego no haya terminado
     {
-        
-        //esta logica no la revise
+
+        //Hacemos las comunicaciones entre todos los procesos para que sepan el estado de todas las variables importantes de cada proceso
         my_coins = player->mario->getCoins();
         MPI_Allgather(&my_coins, 1 , MPI_INT , coins , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&enemy, 1 , MPI_INT , attacking , 1 , MPI_INT , MPI_COMM_WORLD); 
@@ -91,13 +86,14 @@ int main(int argc, char *argv[])
         MPI_Allgather(&mygoombas, 1 , MPI_INT , goombas , 1 , MPI_INT , MPI_COMM_WORLD);
         MPI_Allgather(&myKoopas, 1 , MPI_INT , koopatroopas , 1 , MPI_INT , MPI_COMM_WORLD);
         
+        //Se agregan al mundo todos los goombas y koopas que le enviaron
         player->mario->world->addElement(mygoombas);
         player->mario->world->addElement(myKoopas);
         mygoombas = 0;
         myKoopas = 0;
         
-        
-        if(my_id == 0){
+        //El hilo cero comprueba que el juego no haya terminado
+        if(my_id == 0){ 
             alive = 0;
             for(int i = 1; i<num_processes; i++){
                 if(activePlayers[i]){
@@ -115,6 +111,7 @@ int main(int argc, char *argv[])
         MPI_Bcast(&finished, 1, MPI_INT, 0, MPI_COMM_WORLD);
         MPI_Bcast(&alive, 1, MPI_INT, 0, MPI_COMM_WORLD);
 
+        //En caso de que el impresor se haya muerto, se selecciona uno nuevo
         if(my_id==0 && !finished){
             if(!activePlayers[printer])
             {
@@ -143,12 +140,16 @@ int main(int argc, char *argv[])
         }             
         MPI_Bcast(&printer, 1, MPI_INT, 0, MPI_COMM_WORLD);
         player->mario->printer = printer;
+
+        //Si soy el comunicador, imprimo todas mis variables en pantalla
         if(my_id == printer){
             cout << "Posicion en el mundo: " <<  player->mario->getLocation() << "." << "Mario # " << my_id<< ". ";
         }
 
+        //Aca se toman acciones y se camina por el mundo
         if(my_id != 0 && !finished)
         {
+            //Si ya llegamos al final del mundo entonces volvemos a empezar de 0
             if(player->mario->world->getIndexPosition() > 99){ //si ya pasamos por la casilla final entonces refresquese
                 player->mario->world->refreshWorld();
             }
@@ -156,11 +157,13 @@ int main(int argc, char *argv[])
             int action = 0;
             vector<int> elements;
             elements = player->mario->world->getNext();
+
+            //Se toman acciones para cada elemento del mundo en determinada posicion
             for(auto& element: elements)
             {   
                 if(amIalive)
                 {
-                    
+                    //Se decide la accion de acuerdo al elemento
                     action = player->mario->chooseAction((Elements) element);
                     
                     if(action==1) //significa que mario brinco y agarro la moneda
@@ -191,7 +194,7 @@ int main(int argc, char *argv[])
                             }
                             
                         }
-                        else if (estrategy == L)
+                        else if (estrategy == L) //Si la estrategia es atacar al de menos coins
                         {
                             int minimum = 0;
                             minCoins = 1000000;
@@ -265,6 +268,7 @@ int main(int argc, char *argv[])
                                     break;// termina ciclo para que no haga mas de un ataque
                                 }                                
                             }
+                            //Si ningun mario me esta atacando selecciono a uno de los vivos aleatoriamente
                             if(!foundattacker){
                                 while(!foundenemy){
                                     enemy = rand()%num_processes+1;// va de 1 a numero de procesos-1
@@ -290,7 +294,10 @@ int main(int argc, char *argv[])
                 }
             }
         }
+        //Colectamos informacion de si todos estan vivos, para imprimir las estadisticas del hilo
         MPI_Gather( &amIalive , 1 , MPI_INT , activePlayers , 1 , MPI_INT , printer , MPI_COMM_WORLD);
+        
+        //Aqui se imprimen todos los datos
         if(my_id == printer){
             alive = 0;
             int beingAttacked = 0;
@@ -307,6 +314,8 @@ int main(int argc, char *argv[])
         player->mario->world->current_position++;
         sleep(1);
     }
+
+    //El hilo 0 comunica a los demas que ya termino el juego e imprime game over
     MPI_Bcast( &finished , 1 , MPI_INT , 0 , MPI_COMM_WORLD);
     if(my_id == 0){
         cout<<"------------------------------------------------------------\n";
