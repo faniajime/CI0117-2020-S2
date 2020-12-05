@@ -30,6 +30,7 @@ La posición del mundo en la que se encuentra Mario, su número, la cantidad de 
 ### Detalles de la solución
 
 Se muestra un diagrama de clases para representar la relación entre las clases.
+
 ![Diagram](assets/Diagram.jpeg)
 
 ### Referee
@@ -57,11 +58,11 @@ Las carpetas se encuentran acomodadas de la siguiente manera:
 ├── world.cpp (Implementacion de metodos del mundo)
 └── referee.cpp (Contiene el main y la sincronizacion)
 ```
-###MPI
+### MPI
  
  En este apartado se enlistan y describen las funciones de mpi utilizadas:
  
- *MPI_Bcast: Se utiliz
- *MPI_Allgather:
- *MPI_Gather: 
+ * MPI_Bcast: Se utiliz
+ * MPI_Allgather:
+ * MPI_Gather: 
 
