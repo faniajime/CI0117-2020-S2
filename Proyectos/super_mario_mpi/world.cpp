@@ -25,10 +25,16 @@ void World::refreshWorld( ){
     this->current_position=0;
 };
 
-void World::addElement( int koopatroopas){
+void World::addElement( int koopatroopas, int element){
     if( this->world_size - this->current_position > 10){
-        for( int i =0; i<koopatroopas; i++){
-            this->myWorld[this->current_position+10].push_back(2);
+        if( element ==1){//si tengo que anadir koopas
+            for( int i =0; i<koopatroopas; i++){
+                this->myWorld[this->current_position+10].push_back(3);
+            }
+        }else{
+            for( int i =0; i<koopatroopas; i++){
+                this->myWorld[this->current_position+10].push_back(4);
+            }
         }
     }
 };

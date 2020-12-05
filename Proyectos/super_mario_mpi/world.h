@@ -31,7 +31,7 @@ class World
         int getIndexPosition();
         int world_size;
         void refreshWorld();
-        void addElement(int);
+        void addElement(int, int);
         int current_position;
 
     private:
